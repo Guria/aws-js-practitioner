@@ -10,7 +10,10 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint --ignore-path .gitignore --fix src",
-    "prettier": "prettier src --write"
+    "prettier": "prettier src --write",
+    "deploy": "sls deploy",
+    "remove": "sls remove",
+    "build:deploy": "run-s build deploy"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -43,7 +46,11 @@
     "eslint-plugin-react": "^7.31.8",
     "jsdom": "^20.0.0",
     "msw": "^0.47.3",
+    "npm-run-all": "^4.1.5",
     "prettier": "2.7.1",
+    "serverless": "^3.22.0",
+    "serverless-cloudfront-invalidate": "^1.12.2",
+    "serverless-s3-sync": "^3.1.0",
     "terser": "^5.15.0",
     "typescript": "^4.8.4",
     "vite": "^3.1.4",
