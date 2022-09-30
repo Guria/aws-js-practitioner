@@ -12,6 +12,7 @@ coverage
 dist
 dist-ssr
 *.local
+.serverless
 
 # Editor directories and files
 .vscode/*
