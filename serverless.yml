@@ -34,33 +34,32 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.vars.bucketName}
-        WebsiteConfiguration:
-          IndexDocument: index.html
-          ErrorDocument: index.html
+
+    CloudFrontOriginAccessControl:
+      Type: AWS::CloudFront::OriginAccessControl
+      Properties:
+        OriginAccessControlConfig:
+          Description: Default Origin Access Control
+          Name: CloudFrontOriginAccessControl
+          OriginAccessControlOriginType: s3
+          SigningBehavior: always
+          SigningProtocol: sigv4
 
     WebAppS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
-        Bucket:
-          Ref: WebAppS3Bucket
+        Bucket: !Ref WebAppS3Bucket
         PolicyDocument:
           Statement:
-            - Sid: "AllowCloudFrontAccessIdentity"
+            - Sid: "AllowCloudFrontServicePrincipalReadOnly"
               Effect: Allow
+              Principal:
+                Service: cloudfront.amazonaws.com
               Action: s3:GetObject
               Resource: !Sub ${WebAppS3Bucket.Arn}/*
-              Principal:
-                AWS:
-                  Fn::Join:
-                    - " "
-                    - - "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity"
-                      - !Ref OriginAccessIdentity
-
-    OriginAccessIdentity:
-      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
-      Properties:
-        CloudFrontOriginAccessIdentityConfig:
-          Comment: Access identity between CloudFront and S3 bucket
+              Condition:
+                StringEquals:
+                  AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${WebAppDistribution}
 
     WebAppDistribution:
       Type: AWS::CloudFront::Distribution
@@ -68,9 +67,10 @@ resources:
         DistributionConfig:
           Origins:
             - DomainName: !GetAtt WebAppS3Bucket.RegionalDomainName
-              Id: myS3Origin
+              Id: WebAppS3BucketOrigin
               S3OriginConfig:
-                OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${OriginAccessIdentity}
+                OriginAccessIdentity: ""
+              OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
           Enabled: true
           IPV6Enabled: true
           HttpVersion: http2
@@ -91,7 +91,7 @@ resources:
               QueryString: false
               Cookies:
                 Forward: none
-            TargetOriginId: myS3Origin
+            TargetOriginId: WebAppS3BucketOrigin
             ViewerProtocolPolicy: redirect-to-https
             Compress: true
             DefaultTTL: 0
@@ -104,5 +104,4 @@ resources:
     WebAppDistributionOutput:
       Value: !GetAtt WebAppDistribution.DomainName
     WebAppDistributionIdOutput:
-      Value:
-        Ref: WebAppDistribution
+      Value: !Ref WebAppDistribution
