@@ -1,6 +1,7 @@
-service: guria-aws-js-practitioner
+service: aws-js-practitioner
 frameworkVersion: "3"
 configValidationMode: error
+useDotenv: true
 
 provider:
   name: aws
@@ -14,14 +15,16 @@ plugins:
 custom:
   vars:
     bucketName: ${self:service}-${sls:stage}
+    domainName: ${self:service}-${sls:stage}.${env:HOSTED_ZONE_DOMAIN}
   log-output-values:
-    - template: "Web App deployed to: https://{WebAppDistributionOutput}"
+    - template:
+        "Web App deployed to Cloudfront and available at following addresses:\n
+        * https://{WebAppDistributionOutput}\n
+        * https://{WebAppCustomDomainOutput}"
   s3Sync:
     - bucketName: ${self:custom.vars.bucketName}
       localDir: dist
       deleteRemoved: true
-      cacheControl: "max-age=31536000, no-transform, public"
-      defaultContentType: "text/html"
   cloudfrontInvalidate:
     - distributionIdKey: "WebAppDistributionIdOutput"
       autoInvalidate: true
@@ -95,8 +98,22 @@ resources:
             ViewerProtocolPolicy: redirect-to-https
             Compress: true
             DefaultTTL: 0
+          Aliases:
+            - ${self:custom.vars.domainName}
           ViewerCertificate:
-            CloudFrontDefaultCertificate: true
+            AcmCertificateArn: ${env:HOSTED_ZONE_CERTIFICATE_ARN}
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+    Route53Record:
+      Type: AWS::Route53::RecordSet
+      Properties:
+        HostedZoneName: ${env:HOSTED_ZONE_DOMAIN}.
+        Name: ${self:custom.vars.domainName}.
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName: !GetAtt WebAppDistribution.DomainName
+          EvaluateTargetHealth: false
 
   Outputs:
     WebAppS3BucketOutput:
@@ -105,3 +122,5 @@ resources:
       Value: !GetAtt WebAppDistribution.DomainName
     WebAppDistributionIdOutput:
       Value: !Ref WebAppDistribution
+    WebAppCustomDomainOutput:
+      Value: ${self:custom.vars.domainName}
