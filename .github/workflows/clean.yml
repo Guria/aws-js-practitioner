@@ -1,18 +1,14 @@
-name: Build&Deploy
-
 on:
-  push:
-    branches: [main, temp]
   pull_request:
-    branches: [main]
+    types:
+      - closed
 
 jobs:
-  build_deploy:
+  clean_pr_deployment:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-      pull-requests: write
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js
@@ -31,22 +27,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - run: npm ci --legacy-peer-deps
-      - run: npm run lint
-      - run: npm test -- --coverage
-      - run: npm run build
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_FOR_GITHUB }}
           aws-region: us-east-1
-      - name: Deploy
-        id: deploy
-        run: |
-          body="$(npm run deploy -- -s ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref }} 2>&1)"
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}" 
-          echo "::set-output name=result::$body"
+      - run: npm run remove -- -s ${{ github.event.pull_request.head.ref }})"
       - name: Find Comment
         uses: peter-evans/find-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
@@ -54,15 +40,12 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: "github-actions[bot]"
-          body-includes: Build output
-
+          body-includes: Deployment removed
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Build output
-            ${{ steps.deploy.outputs.result }}
+          body: Deployment removed
           edit-mode: replace
