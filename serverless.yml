@@ -43,7 +43,7 @@ resources:
       Properties:
         OriginAccessControlConfig:
           Description: Default Origin Access Control
-          Name: CloudFrontOriginAccessControl
+          Name: CloudFrontOriginAccessControl-${sls:stage}
           OriginAccessControlOriginType: s3
           SigningBehavior: always
           SigningProtocol: sigv4
