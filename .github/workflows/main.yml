@@ -43,7 +43,7 @@ jobs:
         id: deploy
         run: |
           # slugify branch ref
-          slug=$(echo ${{ github.event.pull_request.head.ref || github.ref }} | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+\|-+$//g')
+          slug=$(echo ${{ github.event.pull_request.head.ref || 'stg' }} | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+\|-+$//g')
           body="$(npm run deploy -- -s $slug 2>&1)"
           body="${body//'%'/'%25'}"
           body="${body//$'\n'/'%0A'}"
