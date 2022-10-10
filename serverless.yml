@@ -82,6 +82,11 @@ resources:
             - ErrorCode: 404
               ResponseCode: 200
               ResponsePagePath: /index.html
+            # For some reason, CloudFront or S3 generates 403 errors for non existent files
+            # when it is configured with Origin Access Control and without static website hosting in S3 bucket
+            - ErrorCode: 403
+              ResponseCode: 200
+              ResponsePagePath: /index.html
           DefaultCacheBehavior:
             AllowedMethods: ["GET", "HEAD", "OPTIONS"]
             CachedMethods: ["GET", "HEAD", "OPTIONS"]
