@@ -1,67 +1,31 @@
 {
-  "name": "my-store-app",
+  "name": "@guria.dev/aws-js-practitioner-app",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "services/*",
+    "plugins/*"
+  ],
   "scripts": {
-    "start": "vite",
-    "build": "tsc && vite build",
-    "preview": "npm run build && vite preview",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
-    "lint": "eslint --ignore-path .gitignore",
-    "lint:fix": "run-s 'lint --fix src'",
-    "prettier": "prettier src --write",
+    "test": "npx cross-env CI=true npm run --workspaces test",
+    "lint": "npm run --workspaces lint",
     "deploy": "sls deploy",
-    "remove": "sls remove",
-    "build:deploy": "run-s build deploy"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
-    "@mui/icons-material": "^5.10.6",
-    "@mui/material": "^5.10.7",
-    "@mui/styles": "^5.10.7",
-    "@vitest/coverage-c8": "^0.23.4",
-    "axios": "^0.27.2",
-    "formik": "^2.2.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-query": "^3.39.2",
-    "react-router-dom": "^6.4.1",
-    "yup": "^0.32.11"
+    "remove": "sls remove"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.4.3",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
-    "@vitejs/plugin-react": "^2.1.0",
-    "@vitest/ui": "^0.23.4",
-    "eslint": "^8.24.0",
+    "@serverless/compose": "^1.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.31.8",
-    "jsdom": "^20.0.0",
-    "msw": "^0.47.3",
+    "eslint-plugin-react": "^7.31.10",
     "npm-run-all": "^4.1.5",
     "prettier": "2.7.1",
     "serverless": "^3.22.0",
-    "serverless-cloudfront-invalidate": "^1.12.2",
-    "serverless-s3-sync": "^3.1.0",
-    "terser": "^5.15.0",
-    "typescript": "^4.8.4",
-    "vite": "^3.1.4",
-    "vite-plugin-top-level-await": "^1.1.1",
-    "vitest": "^0.23.4"
-  },
-  "msw": {
-    "workerDirectory": "public"
+    "typescript": "^4.8.4"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   }
 }

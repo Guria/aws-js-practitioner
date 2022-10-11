@@ -1,0 +1,3 @@
+services:
+  shop-frontend-app:
+    path: ./services/shop-frontend-app

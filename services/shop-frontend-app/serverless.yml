@@ -1,4 +1,4 @@
-service: aws-js-practitioner
+service: aws-js-practitioner-shop-frontend
 frameworkVersion: "3"
 configValidationMode: error
 useDotenv: true
@@ -10,19 +10,19 @@ provider:
 plugins:
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
-  - log-output-values
+  - "@guria.dev/serverless-log-output-values"
 
 custom:
   vars:
-    bucketName: ${self:service}-${sls:stage}
-    domainName: ${self:service}-${sls:stage}.${env:HOSTED_ZONE_DOMAIN}
+    prefix: ${self:service}-${sls:stage}
+    domainName: ${self:custom.vars.prefix}.${env:HOSTED_ZONE_DOMAIN}
   log-output-values:
     - template:
         "Web App deployed to Cloudfront and available at following addresses:\n
         * https://{WebAppDistributionOutput}\n
         * https://{WebAppCustomDomainOutput}"
   s3Sync:
-    - bucketName: ${self:custom.vars.bucketName}
+    - bucketName: ${self:custom.vars.prefix}
       localDir: dist
       deleteRemoved: true
   cloudfrontInvalidate:
@@ -36,14 +36,14 @@ resources:
     WebAppS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.vars.bucketName}
+        BucketName: ${self:custom.vars.prefix}
 
     CloudFrontOriginAccessControl:
       Type: AWS::CloudFront::OriginAccessControl
       Properties:
         OriginAccessControlConfig:
           Description: Default Origin Access Control
-          Name: CloudFrontOriginAccessControl-${sls:stage}
+          Name: ${self:custom.vars.prefix}
           OriginAccessControlOriginType: s3
           SigningBehavior: always
           SigningProtocol: sigv4
@@ -121,8 +121,6 @@ resources:
           EvaluateTargetHealth: false
 
   Outputs:
-    WebAppS3BucketOutput:
-      Value: !Ref WebAppS3Bucket
     WebAppDistributionOutput:
       Value: !GetAtt WebAppDistribution.DomainName
     WebAppDistributionIdOutput:
