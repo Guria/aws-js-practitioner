@@ -1,0 +1,13 @@
+{
+  "name": "@guria.dev/serverless-log-output-values",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "echo \"No test specified\" || true"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
