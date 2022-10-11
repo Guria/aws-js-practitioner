@@ -7,8 +7,8 @@
     "plugins/*"
   ],
   "scripts": {
-    "test": "npx cross-env CI=true npm run --workspaces test",
-    "lint": "npm run --workspaces lint",
+    "test": "npx cross-env CI=true npm run -ws --if-present test",
+    "lint": "npm run -ws --if-present lint",
     "deploy": "sls deploy",
     "remove": "sls remove"
   },
