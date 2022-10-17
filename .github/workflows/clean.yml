@@ -38,7 +38,8 @@ jobs:
       - run: |
           # slugify branch ref
           slug=$(echo ${{ github.event.pull_request.head.ref }} | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+\|-+$//g')
-          npm run remove -- --stage $slug
+          npx sls refresh-outputs --stage $slug
+          npx sls remove --stage $slug
       - name: Find Comment
         uses: peter-evans/find-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
