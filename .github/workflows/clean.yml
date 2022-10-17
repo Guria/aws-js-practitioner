@@ -1,5 +1,9 @@
 name: Cleanup deployment
 
+concurrency:
+  group: ${{ github.event.pull_request.head.ref || 'stg' }}
+  cancel-in-progress: false
+
 on:
   pull_request:
     types:
