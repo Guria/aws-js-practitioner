@@ -11,4 +11,5 @@ services:
   shop-frontend-app:
     path: ./services/shop-frontend-app
     params:
+      apiGatewayRestApiId: ${api-gw.apiGatewayRestApiId}
       productsApiServiceEndpoint: ${products-api.ServiceEndpoint}
