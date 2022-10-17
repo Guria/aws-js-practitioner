@@ -1,0 +1,21 @@
+{
+  "name": "@guria.dev/aws-js-practitioner-products-api",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@middy/core": "^3.6.1",
+    "@middy/http-cors": "^3.6.1",
+    "@middy/http-json-body-parser": "^3.6.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.107",
+    "@types/node": "^16.11.65",
+    "esbuild": "^0.15.11",
+    "serverless-esbuild": "^1.33.0"
+  }
+}

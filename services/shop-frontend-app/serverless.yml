@@ -10,6 +10,7 @@ provider:
 plugins:
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
+  - "@guria.dev/serverless-scriptable"
   - "@guria.dev/serverless-log-output-values"
 
 custom:
@@ -17,10 +18,10 @@ custom:
     prefix: ${self:service}-${sls:stage}
     domainName: ${self:custom.vars.prefix}.${env:HOSTED_ZONE_DOMAIN}
   log-output-values:
-    - template:
-        "Web App deployed to Cloudfront and available at following addresses:\n
-        * https://{WebAppDistributionOutput}\n
-        * https://{WebAppCustomDomainOutput}"
+    - template: |
+        Web App deployed to Cloudfront and available at following addresses:
+        * https://{WebAppDistributionOutput}
+        * https://{WebAppCustomDomainOutput}
   s3Sync:
     - bucketName: ${self:custom.vars.prefix}
       localDir: dist
@@ -30,6 +31,11 @@ custom:
       autoInvalidate: true
       items:
         - "/index.html"
+  scriptable:
+    hooks:
+      before:package:createDeploymentArtifacts: |
+        echo "_CONFIG_ = {BASE_URL: \"${param:productsApiServiceEndpoint}\"}" > public/config.js
+        npm run build
 
 resources:
   Resources:

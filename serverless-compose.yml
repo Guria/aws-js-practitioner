@@ -1,3 +1,14 @@
 services:
+  api-gw:
+    path: ./services/api-gateway
+
+  products-api:
+    path: ./services/products-api
+    params:
+      apiGatewayRestApiId: ${api-gw.apiGatewayRestApiId}
+      apiGatewayRestApiRootResourceId: ${api-gw.apiGatewayRestApiRootResourceId}
+
   shop-frontend-app:
     path: ./services/shop-frontend-app
+    params:
+      productsApiServiceEndpoint: ${products-api.ServiceEndpoint}

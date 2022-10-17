@@ -1,8 +1,28 @@
 import axios, { AxiosError } from "axios";
 import API_PATHS from "~/constants/apiPaths";
-import { AvailableProduct } from "@commons/models/Product";
+import { Product, AvailableProduct } from "@commons/models/Product";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import React from "react";
+
+export function useProducts() {
+  return useQuery<Product[], AxiosError>("products", async () => {
+    const res = await axios.get<Product[]>(API_PATHS.products);
+    return res.data;
+  });
+}
+
+export function useProduct(id?: string) {
+  return useQuery<Product, AxiosError>(
+    ["product", { id }],
+    async () => {
+      const res = await axios.get<Product>(`${API_PATHS.products}/${id}`);
+      return res.data;
+    },
+    { enabled: !!id }
+  );
+}
+
+// TODO: rework available* endpoints to be scoped in admin
 
 export function useAvailableProducts() {
   return useQuery<AvailableProduct[], AxiosError>(
