@@ -1,7 +1,5 @@
 import { Product } from "@guria.dev/aws-js-practitioner-commons/models/Product";
-import { products } from "@guria.dev/aws-js-practitioner-commons/mocks";
-
-class ProductsService {
+export class ProductsService {
   constructor(private products: Product[]) {}
 
   public getProductById(id: string | number): Product | undefined {
@@ -12,5 +10,3 @@ class ProductsService {
     return this.products;
   }
 }
-
-export default new ProductsService(products);
