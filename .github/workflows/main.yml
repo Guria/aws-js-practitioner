@@ -22,11 +22,11 @@ jobs:
       - name: Get npm cache directory
         id: npm-cache-dir
         run: |
-          echo "::set-output name=dir::$(npm config get cache)"
+          echo "NPM_DIR=$(npm config get cache)" >> $GITHUB_ENV
       - uses: actions/cache@v3
         id: npm-cache
         with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          path: ${{ env.NPM_DIR }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -43,11 +43,10 @@ jobs:
         run: |
           # slugify branch ref
           slug=$(echo ${{ github.event.pull_request.head.ref || 'stg' }} | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+\|-+$//g')
-          body="$(npm run deploy -- --stage $slug 2>&1)"
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}" 
-          echo "::set-output name=result::$body"
+          npm run deploy -- --stage $slug
+          echo 'COMMENT_BODY<<EOF' >> $GITHUB_ENV
+          cat ./.serverless/compose.log >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
       - name: Find Comment
         uses: peter-evans/find-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
@@ -65,5 +64,5 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Build output
-            ${{ steps.deploy.outputs.result }}
+            ${{ env.COMMENT_BODY }}
           edit-mode: replace
