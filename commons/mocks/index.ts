@@ -1,7 +1,7 @@
-import { OrderStatus } from "~/constants/order";
-import { CartItem } from "~/models/CartItem";
-import { Order } from "~/models/Order";
-import { AvailableProduct, Product } from "~/models/Product";
+import { OrderStatus } from "../models/Order";
+import { CartItem } from "../models/CartItem";
+import { Order } from "../models/Order";
+import { AvailableProduct, Product } from "../models/Product";
 
 export const products: Product[] = [
   {
@@ -24,7 +24,7 @@ export const products: Product[] = [
   },
   {
     description: "Short Product Description4",
-    id: "7567ec4b-b10c-48c5-9345-fc73348a80a1",
+    id: "7567ec4b-b10c-48c5-9345-fc73348a80a4",
     price: 15,
     title: "ProductTest",
   },
@@ -36,7 +36,7 @@ export const products: Product[] = [
   },
   {
     description: "Short Product Description7",
-    id: "7567ec4b-b10c-45c5-9345-fc73c48a80a1",
+    id: "7567ec4b-b10c-45c5-9345-fc73c48a80a5",
     price: 15,
     title: "ProductName",
   },

@@ -1,5 +1,15 @@
 import * as Yup from "yup";
-import { OrderStatus } from "~/constants/order";
+
+export enum OrderStatus {
+  Open = "OPEN",
+  Approved = "APPROVED",
+  Confirmed = "CONFIRMED",
+  Sent = "SENT",
+  Completed = "COMPLETED",
+  Cancelled = "CANCELLED",
+}
+
+export const ORDER_STATUS_FLOW = Object.values(OrderStatus);
 
 export const AddressSchema = Yup.object({
   firstName: Yup.string().required().default(""),

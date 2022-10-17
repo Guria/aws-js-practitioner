@@ -1,6 +1,9 @@
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import { AvailableProduct, AvailableProductSchema } from "~/models/Product";
+import {
+  AvailableProduct,
+  AvailableProductSchema,
+} from "@commons/models/Product";
 import { Formik, Field, FormikProps, Form } from "formik";
 import TextField from "~/components/Form/TextField";
 import { useNavigate, useParams } from "react-router-dom";

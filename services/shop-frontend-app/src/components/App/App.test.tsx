@@ -4,8 +4,8 @@ import App from "~/components/App/App";
 import { server } from "~/mocks/server";
 import { rest } from "msw";
 import API_PATHS from "~/constants/apiPaths";
-import { CartItem } from "~/models/CartItem";
-import { AvailableProduct } from "~/models/Product";
+import { CartItem } from "@commons/models/CartItem";
+import { AvailableProduct } from "@commons/models/Product";
 import { renderWithProviders } from "~/testUtils";
 import { screen, waitForElementToBeRemoved } from "@testing-library/react";
 import { formatAsPrice } from "~/utils/utils";
@@ -28,7 +28,7 @@ test("Renders products list", async () => {
     },
   ];
   server.use(
-    rest.get(`${API_PATHS.bff}/product/available`, (req, res, ctx) => {
+    rest.get(`${API_PATHS.products}/available`, (req, res, ctx) => {
       return res(
         ctx.status(200),
         ctx.delay(),
