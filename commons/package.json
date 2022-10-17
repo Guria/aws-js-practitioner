@@ -1,0 +1,10 @@
+{
+  "name": "@guria.dev/aws-js-practitioner-commons",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "yup": "^0.32.11"
+  }
+}

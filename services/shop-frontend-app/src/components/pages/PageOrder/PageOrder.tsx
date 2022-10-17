@@ -1,14 +1,14 @@
 import React from "react";
-import { Order, OrderItem } from "~/models/Order";
+import { Order, OrderItem } from "@commons/models/Order";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import PaperLayout from "~/components/PaperLayout/PaperLayout";
 import Typography from "@mui/material/Typography";
 import API_PATHS from "~/constants/apiPaths";
-import { CartItem } from "~/models/CartItem";
-import { AvailableProduct } from "~/models/Product";
+import { CartItem } from "@commons/models/CartItem";
+import { AvailableProduct } from "@commons/models/Product";
 import ReviewOrder from "~/components/pages/PageCart/components/ReviewOrder";
-import { OrderStatus, ORDER_STATUS_FLOW } from "~/constants/order";
+import { OrderStatus, ORDER_STATUS_FLOW } from "@commons/models/Order";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { Field, Form, Formik, FormikProps } from "formik";
@@ -43,7 +43,7 @@ export default function PageOrder() {
       queryKey: "products",
       queryFn: async () => {
         const res = await axios.get<AvailableProduct[]>(
-          `${API_PATHS.bff}/product/available`
+          `${API_PATHS.products}/available`
         );
         return res.data;
       },
