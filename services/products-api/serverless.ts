@@ -1,6 +1,7 @@
 import type { AWS } from "@serverless/typescript";
 
 import getProductsList from "@functions/getProductsList";
+import getProductById from "@functions/getProductById";
 
 const serverlessConfiguration: AWS = {
   service: "products-api",
@@ -20,7 +21,7 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
     },
   },
-  functions: { getProductsList },
+  functions: { getProductsList, getProductById },
   package: { individually: true },
   custom: {
     esbuild: {
