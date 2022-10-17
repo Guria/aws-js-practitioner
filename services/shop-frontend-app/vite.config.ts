@@ -4,16 +4,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import topLevelAwait from "vite-plugin-top-level-await";
-import * as path from "path";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve: {
-    alias: {
-      "~": path.resolve(__dirname, "src"),
-    },
-  },
-  plugins: [react(), topLevelAwait()],
+  plugins: [tsconfigPaths(), react(), topLevelAwait()],
   build: {
     minify: "terser",
     rollupOptions: {

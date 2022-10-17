@@ -4,7 +4,8 @@
   "private": true,
   "workspaces": [
     "services/*",
-    "plugins/*"
+    "plugins/*",
+    "commons"
   ],
   "scripts": {
     "test": "npx cross-env CI=true npm run -ws --if-present test",
