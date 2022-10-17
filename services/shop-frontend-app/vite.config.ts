@@ -11,11 +11,13 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react(), topLevelAwait()],
   build: {
     minify: "terser",
+    chunkSizeWarningLimit: 900,
     rollupOptions: {
       output: {
         manualChunks: {
           react: ["react", "react-dom", "react-query", "react-router-dom"],
           libs: ["formik", "yup", "axios"],
+          swagger: ["swagger-ui-react"],
         },
       },
     },

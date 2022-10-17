@@ -22,6 +22,10 @@ custom:
         Web App deployed to Cloudfront and available at following addresses:
         * https://{WebAppDistributionOutput}
         * https://{WebAppCustomDomainOutput}
+        Swagger Schema available at:
+        * https://{WebAppCustomDomainOutput}/swagger.json
+        Swagger UI available at:
+        * https://{WebAppCustomDomainOutput}/swagger
   s3Sync:
     - bucketName: ${self:custom.vars.prefix}
       localDir: dist
@@ -31,9 +35,12 @@ custom:
       autoInvalidate: true
       items:
         - "/index.html"
+        - "/config.js"
+        - "/swagger.json"
   scriptable:
     hooks:
       before:package:createDeploymentArtifacts: |
+        aws apigateway get-export --parameters extensions='apigateway' --rest-api-id ${param:apiGatewayRestApiId} --stage-name ${sls:stage} --export-type swagger public/swagger.json
         echo "_CONFIG_ = {BASE_URL: \"${param:productsApiServiceEndpoint}\"}" > public/config.js
         npm run build
 
