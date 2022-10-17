@@ -1,0 +1,25 @@
+service: aws-js-practitioner-api
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+
+custom:
+  vars:
+    prefix: ${self:service}-${sls:stage}
+
+resources:
+  Resources:
+    ApiGW:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${self:custom.vars.prefix}
+        Description: API Gateway for the AWS JS Practitioner course
+
+  Outputs:
+    apiGatewayRestApiId:
+      Value: !Ref ApiGW
+
+    apiGatewayRestApiRootResourceId:
+      Value:
+        Fn::GetAtt: [ApiGW, RootResourceId]

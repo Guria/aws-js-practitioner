@@ -1,0 +1,12 @@
+{
+  "name": "@guria.dev/serverless-scriptable",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "bluebird": "^3.7.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

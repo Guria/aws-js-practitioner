@@ -1,6 +1,7 @@
 import { PRODUCTS_API_PATH } from "@commons/constants/api-paths";
 
-const BASE_URL = "https://.execute-api.eu-west-1.amazonaws.com/dev";
+declare let _CONFIG_: { BASE_URL: string };
+const BASE_URL = _CONFIG_.BASE_URL;
 
 const API_PATHS = {
   order: BASE_URL,
