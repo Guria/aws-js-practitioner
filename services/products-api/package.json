@@ -2,7 +2,8 @@
   "name": "@guria.dev/aws-js-practitioner-products-api",
   "version": "1.0.0",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -13,9 +14,12 @@
     "@middy/http-json-body-parser": "^3.6.1"
   },
   "devDependencies": {
+    "@homeservenow/serverless-event-mocks": "^1.0.6",
     "@types/aws-lambda": "^8.10.107",
     "@types/node": "^16.11.65",
     "esbuild": "^0.15.11",
-    "serverless-esbuild": "^1.33.0"
+    "serverless-esbuild": "^1.33.0",
+    "vite-tsconfig-paths": "^3.5.1",
+    "vitest": "^0.24.3"
   }
 }
