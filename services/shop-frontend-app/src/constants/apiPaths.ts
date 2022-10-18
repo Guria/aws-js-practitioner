@@ -1,7 +1,14 @@
 import { PRODUCTS_API_PATH } from "@commons/constants/api-paths";
 
-declare let _CONFIG_: { BASE_URL: string };
-const BASE_URL = _CONFIG_.BASE_URL;
+declare global {
+  interface Window {
+    _CONFIG_?: {
+      BASE_URL?: string;
+    };
+  }
+}
+
+const BASE_URL = window._CONFIG_?.BASE_URL || "";
 
 const API_PATHS = {
   order: BASE_URL,
