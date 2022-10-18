@@ -37,4 +37,22 @@ describe("getProductById", () => {
       })
     );
   });
+  test("should return 404 if product not found", async () => {
+    const event = createMockAPIGatewayEvent({
+      path: "/products/3",
+      httpMethod: "GET",
+      pathParameters: {
+        productId: "3",
+      },
+    });
+    const result = (await main(
+      // @ts-expect-error - middy should be able to handle this
+      event,
+      createMockContext()
+    )) as APIGatewayProxyResult;
+    expect(result.statusCode).toBe(404);
+    expect(result.body).toEqual(
+      JSON.stringify({ message: "Product not found" })
+    );
+  });
 });
