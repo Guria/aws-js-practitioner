@@ -1,7 +1,6 @@
-service: aws-js-practitioner-shop-frontend
+service: ajp-shop-frontend
 frameworkVersion: "3"
 configValidationMode: error
-useDotenv: true
 
 provider:
   name: aws
@@ -14,24 +13,21 @@ plugins:
   - "@guria.dev/serverless-log-output-values"
 
 custom:
-  vars:
-    prefix: ${self:service}-${sls:stage}
-    domainName: ${self:custom.vars.prefix}.${env:HOSTED_ZONE_DOMAIN}
   log-output-values:
     - template: |
         Web App deployed to Cloudfront and available at following addresses:
-        * https://{WebAppDistributionOutput}
-        * https://{WebAppCustomDomainOutput}
+        * https://${param:WebAppDistributionDomain}
+        * https://${param:WebAppCustomDomain}
         Swagger Schema available at:
-        * https://{WebAppCustomDomainOutput}/swagger.json
+        * https://${param:WebAppCustomDomain}/swagger.json
         Swagger UI available at:
-        * https://{WebAppCustomDomainOutput}/swagger
+        * https://${param:WebAppCustomDomain}/swagger
   s3Sync:
-    - bucketName: ${self:custom.vars.prefix}
+    - bucketName: ${param:WebAppS3BucketName}
       localDir: dist
       deleteRemoved: true
   cloudfrontInvalidate:
-    - distributionIdKey: "WebAppDistributionIdOutput"
+    - distributionId: ${param:WebAppDistributionId}
       autoInvalidate: true
       items:
         - "/index.html"
@@ -40,103 +36,6 @@ custom:
   scriptable:
     hooks:
       before:package:createDeploymentArtifacts: |
-        aws apigateway get-export --parameters extensions='apigateway' --rest-api-id ${param:apiGatewayRestApiId} --stage-name ${sls:stage} --export-type swagger public/swagger.json
-        echo "_CONFIG_ = {BASE_URL: \"${param:productsApiServiceEndpoint}\"}" > public/config.js
+        aws apigateway get-export --parameters extensions='apigateway' --rest-api-id ${param:ApiGatewayRestApiId} --stage-name ${sls:stage} --export-type swagger public/swagger.json
+        echo "_CONFIG_ = {BASE_URL: \"${param:ProductsApiServiceEndpoint}\"}" > public/config.js
         npm run build
-
-resources:
-  Resources:
-    WebAppS3Bucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:custom.vars.prefix}
-
-    CloudFrontOriginAccessControl:
-      Type: AWS::CloudFront::OriginAccessControl
-      Properties:
-        OriginAccessControlConfig:
-          Description: Default Origin Access Control
-          Name: ${self:custom.vars.prefix}
-          OriginAccessControlOriginType: s3
-          SigningBehavior: always
-          SigningProtocol: sigv4
-
-    WebAppS3BucketPolicy:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket: !Ref WebAppS3Bucket
-        PolicyDocument:
-          Statement:
-            - Sid: "AllowCloudFrontServicePrincipalReadOnly"
-              Effect: Allow
-              Principal:
-                Service: cloudfront.amazonaws.com
-              Action: s3:GetObject
-              Resource: !Sub ${WebAppS3Bucket.Arn}/*
-              Condition:
-                StringEquals:
-                  AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${WebAppDistribution}
-
-    WebAppDistribution:
-      Type: AWS::CloudFront::Distribution
-      Properties:
-        DistributionConfig:
-          Origins:
-            - DomainName: !GetAtt WebAppS3Bucket.RegionalDomainName
-              Id: WebAppS3BucketOrigin
-              S3OriginConfig:
-                OriginAccessIdentity: ""
-              OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
-          Enabled: true
-          IPV6Enabled: true
-          HttpVersion: http2
-          DefaultRootObject: index.html
-          CustomErrorResponses:
-            - ErrorCode: 404
-              ResponseCode: 200
-              ResponsePagePath: /index.html
-            # For some reason, CloudFront or S3 generates 403 errors for non existent files
-            # when it is configured with Origin Access Control and without static website hosting in S3 bucket
-            - ErrorCode: 403
-              ResponseCode: 200
-              ResponsePagePath: /index.html
-          DefaultCacheBehavior:
-            AllowedMethods: ["GET", "HEAD", "OPTIONS"]
-            CachedMethods: ["GET", "HEAD", "OPTIONS"]
-            ForwardedValues:
-              Headers:
-                - Access-Control-Request-Headers
-                - Access-Control-Request-Method
-                - Origin
-                - Authorization
-              QueryString: false
-              Cookies:
-                Forward: none
-            TargetOriginId: WebAppS3BucketOrigin
-            ViewerProtocolPolicy: redirect-to-https
-            Compress: true
-            DefaultTTL: 0
-          Aliases:
-            - ${self:custom.vars.domainName}
-          ViewerCertificate:
-            AcmCertificateArn: ${env:HOSTED_ZONE_CERTIFICATE_ARN}
-            SslSupportMethod: sni-only
-            MinimumProtocolVersion: TLSv1.2_2021
-    Route53Record:
-      Type: AWS::Route53::RecordSet
-      Properties:
-        HostedZoneName: ${env:HOSTED_ZONE_DOMAIN}.
-        Name: ${self:custom.vars.domainName}.
-        Type: A
-        AliasTarget:
-          HostedZoneId: Z2FDTNDATAQYW2
-          DNSName: !GetAtt WebAppDistribution.DomainName
-          EvaluateTargetHealth: false
-
-  Outputs:
-    WebAppDistributionOutput:
-      Value: !GetAtt WebAppDistribution.DomainName
-    WebAppDistributionIdOutput:
-      Value: !Ref WebAppDistribution
-    WebAppCustomDomainOutput:
-      Value: ${self:custom.vars.domainName}

@@ -4,19 +4,22 @@ import getProductsList from "@functions/getProductsList";
 import getProductById from "@functions/getProductById";
 
 const serverlessConfiguration: AWS = {
-  service: "products-api",
+  service: "ajp-products-api",
   frameworkVersion: "3",
   plugins: ["serverless-esbuild"],
+  configValidationMode: "error",
   provider: {
     name: "aws",
     runtime: "nodejs16.x",
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
-      restApiId: "${param:apiGatewayRestApiId}",
-      restApiRootResourceId: "${param:apiGatewayRestApiRootResourceId}",
+      restApiId: "${param:ApiGatewayRestApiId}",
+      restApiRootResourceId: "${param:ApiGatewayRestApiRootResourceId}",
     },
     environment: {
+      CORS_ORIGINS:
+        "${param:WebAppCustomDomain},${param:WebAppDistributionDomain}",
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
     },
