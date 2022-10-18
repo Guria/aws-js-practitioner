@@ -1,15 +1,28 @@
 services:
-  api-gw:
+  api-gateway:
     path: ./services/api-gateway
+    params:
+      ResourcePrefix: ajp-${sls:stage}
+
+  fe-distribution:
+    path: ./services/fe-distribution
+    params:
+      ResourcePrefix: ajp-${sls:stage}
 
   products-api:
     path: ./services/products-api
     params:
-      apiGatewayRestApiId: ${api-gw.apiGatewayRestApiId}
-      apiGatewayRestApiRootResourceId: ${api-gw.apiGatewayRestApiRootResourceId}
+      ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
+      ApiGatewayRestApiRootResourceId: ${api-gateway.ApiGatewayRestApiRootResourceId}
+      WebAppDistributionDomain: ${fe-distribution.WebAppDistributionDomain}
+      WebAppCustomDomain: ${fe-distribution.WebAppCustomDomain}
 
   shop-frontend-app:
     path: ./services/shop-frontend-app
     params:
-      apiGatewayRestApiId: ${api-gw.apiGatewayRestApiId}
-      productsApiServiceEndpoint: ${products-api.ServiceEndpoint}
+      ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
+      ProductsApiServiceEndpoint: ${api-gateway.ApiGatewayRestApiEndpoint}
+      WebAppS3BucketName: ${fe-distribution.WebAppS3BucketName}
+      WebAppDistributionId: ${fe-distribution.WebAppDistributionId}
+      WebAppDistributionDomain: ${fe-distribution.WebAppDistributionDomain}
+      WebAppCustomDomain: ${fe-distribution.WebAppCustomDomain}
