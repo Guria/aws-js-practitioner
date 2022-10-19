@@ -9,9 +9,16 @@ services:
     params:
       ResourcePrefix: ajp-${sls:stage}
 
+  fixtures:
+    path: ./services/fixtures
+    params:
+      ResourcePrefix: ajp-${sls:stage}
+
   products-api:
     path: ./services/products-api
     params:
+      ResourcePrefix: ajp-${sls:stage}
+      SeedS3BucketName: ${fixtures.SeedS3BucketName}
       ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
       ApiGatewayRestApiRootResourceId: ${api-gateway.ApiGatewayRestApiRootResourceId}
       WebAppDistributionDomain: ${fe-distribution.WebAppDistributionDomain}
@@ -19,6 +26,10 @@ services:
 
   shop-frontend-app:
     path: ./services/shop-frontend-app
+    dependsOn:
+      - api-gateway
+      - fe-distribution
+      - products-api
     params:
       ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
       ProductsApiServiceEndpoint: ${api-gateway.ApiGatewayRestApiEndpoint}

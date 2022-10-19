@@ -26,6 +26,8 @@ const serverlessConfiguration: AWS = {
   },
   functions: { getProductsList, getProductById },
   package: { individually: true },
+  // @ts-expect-error - typings doesn't support file imports
+  resources: "${file(resources.yml)}",
   custom: {
     esbuild: {
       bundle: true,

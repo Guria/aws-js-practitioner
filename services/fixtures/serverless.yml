@@ -1,0 +1,27 @@
+service: ajp-fixtures
+frameworkVersion: "3"
+configValidationMode: error
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  bucketName: "${param:ResourcePrefix}-fixtures"
+  s3Sync:
+    - bucketName: ${self:custom.bucketName}
+      localDir: data
+      deleteRemoved: true
+
+resources:
+  Resources:
+    SeedS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}
+  Outputs:
+    SeedS3BucketName:
+      Value: !Ref SeedS3Bucket
