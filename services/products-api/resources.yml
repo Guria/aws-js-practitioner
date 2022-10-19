@@ -1,0 +1,44 @@
+Resources:
+  ProductsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      ImportSourceSpecification:
+        InputCompressionType: "NONE"
+        InputFormat: "DYNAMODB_JSON"
+        S3BucketSource:
+          S3Bucket: "${param:SeedS3BucketName}"
+          S3KeyPrefix: "seed/products.ndjson"
+
+  ProductStocksTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: productId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: productId
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      BillingMode: "PROVISIONED"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      ImportSourceSpecification:
+        InputCompressionType: "NONE"
+        InputFormat: "DYNAMODB_JSON"
+        S3BucketSource:
+          S3Bucket: "${param:SeedS3BucketName}"
+          S3KeyPrefix: "seed/product-stocks.ndjson"
