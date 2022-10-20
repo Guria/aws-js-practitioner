@@ -1,7 +1,6 @@
 import type { AWS } from "@serverless/typescript";
 
-import getProductsList from "@functions/getProductsList";
-import getProductById from "@functions/getProductById";
+import functions from "./functions";
 
 const serverlessConfiguration: AWS = {
   service: "ajp-products-api",
@@ -22,9 +21,29 @@ const serverlessConfiguration: AWS = {
         "${param:WebAppCustomDomain},${param:WebAppDistributionDomain}",
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      PRODUCTS_TABLE: {
+        Ref: "ProductsTable",
+      },
+      PRODUCT_STOCKS_TABLE: {
+        Ref: "ProductStocksTable",
+      },
+    },
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: "Allow",
+            Action: ["dynamodb:Scan", "dynamodb:GetItem"],
+            Resource: [
+              { "Fn::GetAtt": ["ProductsTable", "Arn"] },
+              { "Fn::GetAtt": ["ProductStocksTable", "Arn"] },
+            ],
+          },
+        ],
+      },
     },
   },
-  functions: { getProductsList, getProductById },
+  functions,
   package: { individually: true },
   // @ts-expect-error - typings doesn't support file imports
   resources: "${file(resources.yml)}",

@@ -1,21 +1,19 @@
-import { describe, test, expect, vi } from "vitest";
+import { describe, test, expect } from "vitest";
 import { APIGatewayProxyResult } from "aws-lambda";
 import {
   createMockAPIGatewayEvent,
   createMockContext,
 } from "@homeservenow/serverless-event-mocks";
 import { createError } from "@middy/util";
-import { middyfy } from "./api-gateway";
+import { middyfy } from "./middify";
 
-vi.mock("./env", () => ({
-  CORS_ORIGINS: "foo.dev,bar.dev",
-}));
+const env = { CORS_ORIGINS: "foo.dev,bar.dev" };
 
 describe("middify", () => {
   test("should handle known errors", async () => {
     const handler = middyfy(async () => {
       throw createError(400, "test");
-    });
+    }, env);
     const result = (await handler(
       // @ts-expect-error - middy should be able to handle this
       createMockAPIGatewayEvent(),
@@ -28,7 +26,7 @@ describe("middify", () => {
   test("should handle unknown errors", async () => {
     const handler = middyfy(async () => {
       throw new Error("test");
-    });
+    }, env);
     const result = (await handler(
       // @ts-expect-error - middy should be able to handle this
       createMockAPIGatewayEvent(),
@@ -44,7 +42,7 @@ describe("middify", () => {
     const handler = middyfy(async (event) => {
       expect(event.body).toEqual({ test: "test" });
       return { statusCode: 200, body: "test" };
-    });
+    }, env);
     await handler(
       // @ts-expect-error - middy should be able to handle this
       createMockAPIGatewayEvent({
@@ -57,7 +55,7 @@ describe("middify", () => {
   test("should add CORS headers for supported origin", async () => {
     const handler = middyfy(async () => {
       return { statusCode: 200, body: "test" };
-    });
+    }, env);
     const result = (await handler(
       // @ts-expect-error - middy should be able to handle this
       createMockAPIGatewayEvent({ headers: { origin: "https://bar.dev" } }),
@@ -72,7 +70,7 @@ describe("middify", () => {
   test("should add first origin in CORS headers for unsupported origin", async () => {
     const handler = middyfy(async () => {
       return { statusCode: 200, body: "test" };
-    });
+    }, env);
     const result = (await handler(
       // @ts-expect-error - middy should be able to handle this
       createMockAPIGatewayEvent({ headers: { origin: "https://baz.dev" } }),
