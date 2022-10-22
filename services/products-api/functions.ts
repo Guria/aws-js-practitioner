@@ -29,6 +29,26 @@ const config: AWS["functions"] = {
       },
     ],
   },
+  createProduct: {
+    handler: "src/handlers/createProduct.main",
+    events: [
+      {
+        http: {
+          method: "post",
+          path: PRODUCTS_API_PATH,
+          cors: true,
+          request: {
+            schemas: {
+              "application/json": {
+                name: "Product",
+                schema: "${file(src/functions/createProduct.schema.json)}",
+              },
+            },
+          },
+        },
+      },
+    ],
+  },
 };
 
 export default config;

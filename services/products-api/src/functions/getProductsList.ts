@@ -1,4 +1,4 @@
-import { formatJSONResponse } from "libs/format-response";
+import { formatJSONResponse } from "libs/formatResponse";
 import type { ProductsService } from "services/products";
 
 export async function handler(productsService: ProductsService) {

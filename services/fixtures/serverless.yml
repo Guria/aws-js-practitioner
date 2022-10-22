@@ -22,6 +22,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.bucketName}
+
   Outputs:
     SeedS3BucketName:
       Value: !Ref SeedS3Bucket

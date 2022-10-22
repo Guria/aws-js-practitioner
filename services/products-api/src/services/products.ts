@@ -1,4 +1,4 @@
-import { ProductsSource } from "./products-source";
+import { Product, ProductsSource } from "./productsSource";
 
 export class ProductsService {
   constructor(private source: ProductsSource) {}
@@ -39,5 +39,9 @@ export class ProductsService {
 
   public async getAvailableProducts() {
     return (await this.getProducts()).filter((product) => product.count > 0);
+  }
+
+  public async createProduct(product: Omit<Product, "id">) {
+    return this.source.createProduct(product);
   }
 }

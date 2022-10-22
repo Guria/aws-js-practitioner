@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { ProductsService } from "./products";
+import { ProductsSource } from "./productsSource";
 
 describe("getProducts", () => {
   test("should return products with stock", async () => {
@@ -22,13 +23,7 @@ describe("getProducts", () => {
         { productId: "1", count: 10 },
         { productId: "2", count: 20 },
       ],
-      getProduct(_id) {
-        return undefined;
-      },
-      getProductStock(_id) {
-        return 0;
-      },
-    });
+    } as ProductsSource);
 
     const products = await productsService.getProducts();
 
@@ -66,13 +61,10 @@ describe("getProducts", () => {
         },
       ],
       getProductsStocks: () => [{ productId: "1", count: 10 }],
-      getProduct(_id) {
-        return undefined;
-      },
-      getProductStock(_id) {
+      getProductStock(_id: string) {
         return 0;
       },
-    });
+    } as ProductsSource);
 
     const products = await productsService.getProducts();
 
@@ -92,91 +84,6 @@ describe("getProducts", () => {
         count: 0,
       },
     ]);
-  });
-});
-
-describe("getProductById", () => {
-  test("should return product with stock", async () => {
-    const productsService = new ProductsService({
-      getProducts() {
-        return [];
-      },
-      getProductsStocks() {
-        return [];
-      },
-      getProduct(id) {
-        return {
-          id,
-          title: "Product 1",
-          description: "Product 1 description",
-          price: 100,
-        };
-      },
-      getProductStock(id) {
-        return id === "1" ? 10 : 0;
-      },
-    });
-
-    const product = await productsService.getProductById("1");
-
-    expect(product).toEqual({
-      id: "1",
-      title: "Product 1",
-      description: "Product 1 description",
-      price: 100,
-      count: 10,
-    });
-  });
-  test("should return undefined if product is not found", async () => {
-    const productsService = new ProductsService({
-      getProducts() {
-        return [];
-      },
-      getProductsStocks() {
-        return [];
-      },
-      getProduct(_id) {
-        return undefined;
-      },
-      getProductStock(_id) {
-        return 0;
-      },
-    });
-
-    const product = await productsService.getProductById("1");
-
-    expect(product).toBe(undefined);
-  });
-  test("should return product with 0 stock if product is not in stock", async () => {
-    const productsService = new ProductsService({
-      getProducts() {
-        return [];
-      },
-      getProductsStocks() {
-        return [];
-      },
-      getProduct(id) {
-        return {
-          id,
-          title: "Product 1",
-          description: "Product 1 description",
-          price: 100,
-        };
-      },
-      getProductStock(_id) {
-        return 0;
-      },
-    });
-
-    const product = await productsService.getProductById("1");
-
-    expect(product).toEqual({
-      id: "1",
-      title: "Product 1",
-      description: "Product 1 description",
-      price: 100,
-      count: 0,
-    });
   });
 });
 
@@ -207,13 +114,7 @@ describe("getAvailableProducts", () => {
         { productId: "1", count: 10 },
         { productId: "2", count: 0 },
       ],
-      getProduct(_id) {
-        return undefined;
-      },
-      getProductStock(_id) {
-        return 0;
-      },
-    });
+    } as ProductsSource);
 
     const products = await productsService.getAvailableProducts();
 
@@ -226,5 +127,95 @@ describe("getAvailableProducts", () => {
         count: 10,
       },
     ]);
+  });
+});
+
+describe("getProductById", () => {
+  test("should return product with stock", async () => {
+    const productsService = new ProductsService({
+      getProduct(id) {
+        return {
+          id,
+          title: "Product 1",
+          description: "Product 1 description",
+          price: 100,
+        };
+      },
+      getProductStock(id) {
+        return id === "1" ? 10 : 0;
+      },
+    } as ProductsSource);
+
+    const product = await productsService.getProductById("1");
+
+    expect(product).toEqual({
+      id: "1",
+      title: "Product 1",
+      description: "Product 1 description",
+      price: 100,
+      count: 10,
+    });
+  });
+  test("should return undefined if product is not found", async () => {
+    const productsService = new ProductsService({
+      getProduct(_id) {
+        return undefined;
+      },
+      getProductStock(_id) {
+        return 0;
+      },
+    } as ProductsSource);
+
+    const product = await productsService.getProductById("1");
+
+    expect(product).toBe(undefined);
+  });
+  test("should return product with 0 stock if product is not in stock", async () => {
+    const productsService = new ProductsService({
+      getProduct(id) {
+        return {
+          id,
+          title: "Product 1",
+          description: "Product 1 description",
+          price: 100,
+        };
+      },
+      getProductStock(_id) {
+        return 0;
+      },
+    } as ProductsSource);
+
+    const product = await productsService.getProductById("1");
+
+    expect(product).toEqual({
+      id: "1",
+      title: "Product 1",
+      description: "Product 1 description",
+      price: 100,
+      count: 0,
+    });
+  });
+});
+
+describe("createProduct", () => {
+  test("should create product", async () => {
+    const productsService = new ProductsService({
+      createProduct(product) {
+        return { id: "1", ...product };
+      },
+    } as ProductsSource);
+
+    const product = await productsService.createProduct({
+      title: "Product 1",
+      description: "Product 1 description",
+      price: 100,
+    });
+
+    expect(product).toEqual({
+      id: "1",
+      title: "Product 1",
+      description: "Product 1 description",
+      price: 100,
+    });
   });
 });
