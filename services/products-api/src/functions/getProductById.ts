@@ -1,8 +1,12 @@
 import { createError } from "@middy/util";
-import { formatJSONResponse } from "libs/format-response";
+import { formatJSONResponse } from "libs/formatResponse";
+import type { APIGatewayProxyEvent } from "aws-lambda";
 import type { ProductsService } from "services/products";
 
-export async function handler(productsService: ProductsService, event) {
+export async function handler(
+  productsService: ProductsService,
+  event: APIGatewayProxyEvent
+) {
   const { productId } = event.pathParameters;
   const product = await productsService.getProductById(productId);
   if (!product) {

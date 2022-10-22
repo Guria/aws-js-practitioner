@@ -36,6 +36,7 @@ custom:
   scriptable:
     hooks:
       before:package:createDeploymentArtifacts: |
+        aws --version
         aws apigateway get-export --parameters extensions='apigateway' --rest-api-id ${param:ApiGatewayRestApiId} --stage-name ${sls:stage} --export-type swagger public/swagger.json
         echo "_CONFIG_ = {BASE_URL: \"${param:ProductsApiServiceEndpoint}\"}" > public/config.js
         npm run build

@@ -1,6 +1,23 @@
 import { describe, test, expect } from "vitest";
+import {
+  createMockAPIGatewayEvent,
+  createMockContext,
+} from "@homeservenow/serverless-event-mocks";
+import { APIGatewayEvent } from "aws-lambda";
 import type { ProductsService } from "services/products";
+import { middyfy } from "libs/middyfy";
 import { handler } from "./getProductsList";
+
+const makeHandler = (productsService: Partial<ProductsService>) => {
+  return (event: APIGatewayEvent) => {
+    const context = createMockContext();
+    return middyfy(handler.bind(null, productsService), {})(
+      // @ts-expect-error - middy has wrong type expectations here
+      event,
+      context
+    );
+  };
+};
 
 describe("getProductsList", () => {
   test("should return products list", async () => {
@@ -24,9 +41,13 @@ describe("getProductsList", () => {
         ];
       },
     };
-    const product = await handler(productsService as ProductsService);
+    const event = createMockAPIGatewayEvent({
+      path: "/products",
+      httpMethod: "GET",
+    });
+    const products = await makeHandler(productsService)(event);
 
-    expect(product).toEqual({
+    expect(products).toMatchObject({
       statusCode: 200,
       body: JSON.stringify([
         {

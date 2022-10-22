@@ -1,5 +1,5 @@
 import type { DynamoDB } from "aws-sdk";
-import type { ProductsSource, Product, ProductStock } from "./products-source";
+import type { ProductsSource, Product, ProductStock } from "./productsSource";
 
 type Env = {
   PRODUCTS_TABLE: string;
@@ -7,7 +7,11 @@ type Env = {
 };
 
 export class DynamoDBProductSource implements ProductsSource {
-  constructor(private dynamoDB: DynamoDB.DocumentClient, private env: Env) {}
+  constructor(
+    private dynamoDB: DynamoDB.DocumentClient,
+    private genUid: () => string,
+    private env: Env
+  ) {}
   public async getProducts(): Promise<Product[]> {
     const result = await this.dynamoDB
       .scan({ TableName: this.env.PRODUCTS_TABLE })
@@ -34,5 +38,16 @@ export class DynamoDBProductSource implements ProductsSource {
       .get({ TableName: this.env.PRODUCT_STOCKS_TABLE, Key: { productId: id } })
       .promise();
     return result.Item?.count;
+  }
+
+  public async createProduct(product: Omit<Product, "id">): Promise<Product> {
+    const newProduct = {
+      ...product,
+      id: this.genUid(),
+    };
+    await this.dynamoDB
+      .put({ TableName: this.env.PRODUCTS_TABLE, Item: newProduct })
+      .promise();
+    return newProduct;
   }
 }

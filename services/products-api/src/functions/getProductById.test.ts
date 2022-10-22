@@ -1,14 +1,30 @@
 import { describe, test, expect } from "vitest";
-import { createMockAPIGatewayEvent } from "@homeservenow/serverless-event-mocks";
+import {
+  createMockAPIGatewayEvent,
+  createMockContext,
+} from "@homeservenow/serverless-event-mocks";
+import { APIGatewayEvent } from "aws-lambda";
 import type { ProductsService } from "services/products";
+import { middyfy } from "libs/middyfy";
 import { handler } from "./getProductById";
+
+const makeHandler = (productsService: Partial<ProductsService>) => {
+  return (event: APIGatewayEvent) => {
+    const context = createMockContext();
+    return middyfy(handler.bind(null, productsService), {})(
+      // @ts-expect-error - middy has wrong type expectations here
+      event,
+      context
+    );
+  };
+};
 
 describe("getProductById", () => {
   test("should return product with stock", async () => {
     const productsService = {
-      getProductById: async (id) => {
+      getProductById: async (productId) => {
         return {
-          id,
+          id: productId,
           title: "Product 1",
           description: "Product 1 description",
           price: 100,
@@ -18,14 +34,12 @@ describe("getProductById", () => {
     };
     const event = createMockAPIGatewayEvent({
       path: "/products/1",
+      pathParameters: { productId: "1" },
       httpMethod: "GET",
-      pathParameters: {
-        productId: "1",
-      },
     });
-    const product = await handler(productsService as ProductsService, event);
+    const product = await makeHandler(productsService)(event);
 
-    expect(product).toEqual({
+    expect(product).toMatchObject({
       statusCode: 200,
       body: JSON.stringify({
         id: "1",
@@ -37,17 +51,20 @@ describe("getProductById", () => {
     });
   });
   test("should throw an error if product is not found", async () => {
+    const productsService = {
+      getProductById: async (_productId) => {
+        return null;
+      },
+    };
     const event = createMockAPIGatewayEvent({
       path: "/products/1",
       httpMethod: "GET",
-      pathParameters: {
-        productId: "1",
-      },
     });
-    const resultPromise = handler(
-      { getProductById: (_id: string) => undefined } as ProductsService,
-      event
-    );
-    expect(resultPromise).rejects.toBeInstanceOf(Error);
+    const product = await makeHandler(productsService)(event);
+
+    expect(product).toMatchObject({
+      statusCode: 404,
+      body: JSON.stringify({ message: "Product not found" }),
+    });
   });
 });

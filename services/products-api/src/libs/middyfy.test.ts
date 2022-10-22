@@ -5,7 +5,7 @@ import {
   createMockContext,
 } from "@homeservenow/serverless-event-mocks";
 import { createError } from "@middy/util";
-import { middyfy } from "./middify";
+import { middyfy } from "./middyfy";
 
 const env = { CORS_ORIGINS: "foo.dev,bar.dev" };
 

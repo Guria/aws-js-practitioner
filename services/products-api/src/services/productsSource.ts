@@ -17,4 +17,5 @@ export interface ProductsSource {
   getProductsStocks(): MaybePromise<ProductStock[]>;
   getProduct(id: string): MaybePromise<Product | undefined>;
   getProductStock(id: string): MaybePromise<number | undefined>;
+  createProduct(product: Omit<Product, "id">): MaybePromise<Product>;
 }

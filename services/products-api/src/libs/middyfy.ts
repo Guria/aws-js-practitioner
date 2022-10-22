@@ -5,23 +5,24 @@ import middyCors from "@middy/http-cors";
 import middyErrorHandler from "@middy/http-error-handler";
 
 type Env = {
-  CORS_ORIGINS: string;
+  CORS_ORIGINS?: string;
 };
 
-export const middyfy = <H extends APIGatewayProxyHandler>(
+export function middyfy<H extends APIGatewayProxyHandler>(
   handler: H,
   env: Env
-) => {
-  const CORS_ORIGINS_ARRAY = env.CORS_ORIGINS.split(",").map((origin) => {
-    return `https://${origin}`;
-  });
+) {
+  const CORS_ORIGINS_ARRAY = (env.CORS_ORIGINS || "")
+    .split(",")
+    .filter(Boolean)
+    .map((origin) => `https://${origin}`);
 
   return middy(handler)
-    .use(middyJsonBodyParser())
     .use(middyCors({ origins: CORS_ORIGINS_ARRAY }))
+    .use(middyJsonBodyParser())
     .use(
       middyErrorHandler({
         fallbackMessage: JSON.stringify({ message: "Internal server error" }),
       })
     );
-};
+}
