@@ -3,21 +3,25 @@ import { formatJSONResponse } from "libs/formatResponse";
 import type { ProductsService } from "services/products";
 import invariant from "tiny-invariant";
 import { Event } from "@middy/http-json-body-parser";
-import { Product } from "services/productsSource";
+import { ProductWithStock } from "services/productsSource";
 
 export async function handler(productsService: ProductsService, event: Event) {
-  const { title, description, price } = event.body as Product;
+  const { title, description, price, count } = event.body as Omit<
+    ProductWithStock,
+    "id"
+  >;
 
   try {
-    invariant(title && typeof title === "string", "Title is required");
+    invariant(typeof title === "string", "Title is required");
     invariant(
-      description && typeof description === "string",
+      typeof description === "string" && description.length > 0,
       "Description is required"
     );
     invariant(
-      price && typeof price === "number" && price > 0,
+      typeof price === "number" && price > 0,
       "Price is required and should be greater than 0"
     );
+    invariant(typeof count === "number", "Count is required");
   } catch (error) {
     throw createError(400, JSON.stringify({ message: error.message }));
   }
@@ -26,6 +30,7 @@ export async function handler(productsService: ProductsService, event: Event) {
     title,
     description,
     price,
+    count,
   });
 
   return formatJSONResponse(product);
