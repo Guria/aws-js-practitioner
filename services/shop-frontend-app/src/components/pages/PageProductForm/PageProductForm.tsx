@@ -10,10 +10,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import PaperLayout from "~/components/PaperLayout/PaperLayout";
 import Typography from "@mui/material/Typography";
 import {
-  useAvailableProduct,
-  useInvalidateAvailableProducts,
+  useProduct,
+  useInvalidateProducts,
   useRemoveProductCache,
-  useUpsertAvailableProduct,
+  useUpsertProduct,
 } from "~/queries/products";
 
 const initialValues: AvailableProduct = AvailableProductSchema.cast({});
@@ -21,18 +21,13 @@ const initialValues: AvailableProduct = AvailableProductSchema.cast({});
 export default function PageProductForm() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const invalidateAvailableProducts = useInvalidateAvailableProducts();
+  const invalidateAvailableProducts = useInvalidateProducts();
   const removeProductCache = useRemoveProductCache();
-  const { data, isLoading } = useAvailableProduct(id);
-  const { mutateAsync: upsertAvailableProduct } = useUpsertAvailableProduct();
+  const { data, isLoading } = useProduct(id);
+  const { mutateAsync: upsertAvailableProduct } = useUpsertProduct();
   const onSubmit = (values: AvailableProduct) => {
     const formattedValues = AvailableProductSchema.cast(values);
-    const productToSave = id
-      ? {
-          ...formattedValues,
-          id,
-        }
-      : formattedValues;
+    const productToSave = id ? { ...formattedValues, id } : formattedValues;
     return upsertAvailableProduct(productToSave, {
       onSuccess: () => {
         invalidateAvailableProducts();

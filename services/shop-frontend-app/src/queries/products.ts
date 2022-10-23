@@ -5,46 +5,13 @@ import { useQuery, useQueryClient, useMutation } from "react-query";
 import React from "react";
 
 export function useProducts() {
-  return useQuery<Product[], AxiosError>("products", async () => {
-    const res = await axios.get<Product[]>(API_PATHS.products);
+  return useQuery<AvailableProduct[], AxiosError>("products", async () => {
+    const res = await axios.get<AvailableProduct[]>(API_PATHS.products);
     return res.data;
   });
 }
 
 export function useProduct(id?: string) {
-  return useQuery<Product, AxiosError>(
-    ["product", { id }],
-    async () => {
-      const res = await axios.get<Product>(`${API_PATHS.products}/${id}`);
-      return res.data;
-    },
-    { enabled: !!id }
-  );
-}
-
-// TODO: rework available* endpoints to be scoped in admin
-
-export function useAvailableProducts() {
-  return useQuery<AvailableProduct[], AxiosError>(
-    "available-products",
-    async () => {
-      const res = await axios.get<AvailableProduct[]>(
-        `${API_PATHS.products}/available`
-      );
-      return res.data;
-    }
-  );
-}
-
-export function useInvalidateAvailableProducts() {
-  const queryClient = useQueryClient();
-  return React.useCallback(
-    () => queryClient.invalidateQueries("available-products", { exact: true }),
-    []
-  );
-}
-
-export function useAvailableProduct(id?: string) {
   return useQuery<AvailableProduct, AxiosError>(
     ["product", { id }],
     async () => {
@@ -57,6 +24,14 @@ export function useAvailableProduct(id?: string) {
   );
 }
 
+export function useInvalidateProducts() {
+  const queryClient = useQueryClient();
+  return React.useCallback(
+    () => queryClient.invalidateQueries("products", { exact: true }),
+    []
+  );
+}
+
 export function useRemoveProductCache() {
   const queryClient = useQueryClient();
   return React.useCallback(
@@ -66,9 +41,9 @@ export function useRemoveProductCache() {
   );
 }
 
-export function useUpsertAvailableProduct() {
+export function useUpsertProduct() {
   return useMutation((values: AvailableProduct) =>
-    axios.put<AvailableProduct>(API_PATHS.products, values, {
+    axios.post<AvailableProduct>(API_PATHS.products, values, {
       headers: {
         Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
       },
@@ -76,7 +51,7 @@ export function useUpsertAvailableProduct() {
   );
 }
 
-export function useDeleteAvailableProduct() {
+export function useDeleteProduct() {
   return useMutation((id: string) =>
     axios.delete(`${API_PATHS.products}/${id}`, {
       headers: {
