@@ -10,6 +10,8 @@ export type ProductStock = {
   count: number;
 };
 
+export type ProductWithStock = Product & { count: number };
+
 type MaybePromise<T> = T | Promise<T>;
 
 export interface ProductsSource {
@@ -17,5 +19,7 @@ export interface ProductsSource {
   getProductsStocks(): MaybePromise<ProductStock[]>;
   getProduct(id: string): MaybePromise<Product | undefined>;
   getProductStock(id: string): MaybePromise<number | undefined>;
-  createProduct(product: Omit<Product, "id">): MaybePromise<Product>;
+  createProduct(
+    product: Omit<ProductWithStock, "id">
+  ): MaybePromise<ProductWithStock>;
 }

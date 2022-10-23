@@ -1,5 +1,10 @@
 import { products } from "@guria.dev/aws-js-practitioner-commons/mocks";
-import type { ProductsSource, Product, ProductStock } from "./productsSource";
+import type {
+  ProductsSource,
+  Product,
+  ProductStock,
+  ProductWithStock,
+} from "./productsSource";
 
 export class MockProductSource implements ProductsSource {
   products = [...products];
@@ -28,12 +33,16 @@ export class MockProductSource implements ProductsSource {
     return this.stocks[id];
   }
 
-  public async createProduct(product: Omit<Product, "id">): Promise<Product> {
+  public async createProduct(
+    product: Omit<ProductWithStock, "id">
+  ): Promise<ProductWithStock> {
+    const { count, ...productWithoutCount } = product;
     const newProduct = {
-      ...product,
+      ...productWithoutCount,
       id: this.genUid(),
     };
     this.products.push(newProduct);
-    return newProduct;
+    this.stocks[newProduct.id] = count;
+    return { ...newProduct, count };
   }
 }

@@ -209,6 +209,7 @@ describe("createProduct", () => {
       title: "Product 1",
       description: "Product 1 description",
       price: 100,
+      count: 10,
     });
 
     expect(product).toEqual({
@@ -216,6 +217,7 @@ describe("createProduct", () => {
       title: "Product 1",
       description: "Product 1 description",
       price: 100,
+      count: 10,
     });
   });
 });
