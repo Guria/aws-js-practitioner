@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "esnext",
+    "moduleResolution": "node"
+  },
+  "include": ["serverless.ts", ".eslintrc.js", "src", "vitest.config.ts"]
+}

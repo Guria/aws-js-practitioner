@@ -1,4 +1,4 @@
-import { provideProductsService } from "libs/provideProductsService";
+import { provideProductsService } from "services/provideProductsService";
 import { handler } from "../functions/getProductsList";
 
 export const main = provideProductsService(handler);

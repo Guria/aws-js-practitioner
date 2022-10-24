@@ -18,7 +18,7 @@ Resources:
         InputCompressionType: "NONE"
         InputFormat: "DYNAMODB_JSON"
         S3BucketSource:
-          S3Bucket: "${param:SeedS3BucketName}"
+          S3Bucket: "${param:FixturesS3BucketName}"
           S3KeyPrefix: "seed/products.ndjson"
 
   ProductStocksTable:
@@ -40,5 +40,5 @@ Resources:
         InputCompressionType: "NONE"
         InputFormat: "DYNAMODB_JSON"
         S3BucketSource:
-          S3Bucket: "${param:SeedS3BucketName}"
+          S3Bucket: "${param:FixturesS3BucketName}"
           S3KeyPrefix: "seed/product-stocks.ndjson"

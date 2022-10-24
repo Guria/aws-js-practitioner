@@ -1,5 +1,5 @@
 import { DynamoDB } from "aws-sdk";
-import { middyfy } from "libs/middyfy";
+import { middyfy } from "@guria.dev/aws-js-practitioner-commons/middy";
 import { ProductsService } from "services/products";
 import { DynamoDBProductSource } from "services/productsSource.dynamo";
 import { v4 as uuidv4 } from "uuid";
