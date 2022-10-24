@@ -1,6 +1,8 @@
-import { createError } from "@middy/util";
-import { formatJSONResponse } from "libs/formatResponse";
 import type { APIGatewayProxyEvent } from "aws-lambda";
+import {
+  formatJSONResponse,
+  createError,
+} from "@guria.dev/aws-js-practitioner-commons/middy";
 import type { ProductsService } from "services/products";
 
 export async function handler(

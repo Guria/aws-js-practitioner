@@ -5,7 +5,7 @@ import {
 } from "@homeservenow/serverless-event-mocks";
 import { APIGatewayEvent } from "aws-lambda";
 import type { ProductsService } from "services/products";
-import { middyfy } from "libs/middyfy";
+import { middyfy } from "@guria.dev/aws-js-practitioner-commons/middy";
 import { handler } from "./createProduct";
 
 const makeHandler = (productsService: Partial<ProductsService>) => {

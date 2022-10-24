@@ -1,11 +1,16 @@
-import { createError } from "@middy/util";
-import { formatJSONResponse } from "libs/formatResponse";
 import type { ProductsService } from "services/products";
 import invariant from "tiny-invariant";
-import { Event } from "@middy/http-json-body-parser";
 import { ProductWithStock } from "services/productsSource";
+import {
+  formatJSONResponse,
+  JSONParsedBodyEvent,
+  createError,
+} from "@guria.dev/aws-js-practitioner-commons/middy";
 
-export async function handler(productsService: ProductsService, event: Event) {
+export async function handler(
+  productsService: ProductsService,
+  event: JSONParsedBodyEvent
+) {
   const { title, description, price, count } = event.body as Omit<
     ProductWithStock,
     "id"

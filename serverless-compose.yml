@@ -18,11 +18,19 @@ services:
     path: ./services/products-api
     params:
       ResourcePrefix: ajp-${sls:stage}
-      SeedS3BucketName: ${fixtures.SeedS3BucketName}
+      FixturesS3BucketName: ${fixtures.FixturesS3BucketName}
       ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
       ApiGatewayRestApiRootResourceId: ${api-gateway.ApiGatewayRestApiRootResourceId}
       WebAppDistributionDomain: ${fe-distribution.WebAppDistributionDomain}
       WebAppCustomDomain: ${fe-distribution.WebAppCustomDomain}
+
+  products-import:
+    path: ./services/products-import
+    params:
+      ResourcePrefix: ajp-${sls:stage}
+      FixturesS3BucketName: ${fixtures.FixturesS3BucketName}
+      ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
+      ApiGatewayRestApiRootResourceId: ${api-gateway.ApiGatewayRestApiRootResourceId}
 
   shop-frontend-app:
     path: ./services/shop-frontend-app
