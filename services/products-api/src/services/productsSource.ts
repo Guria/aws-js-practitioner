@@ -1,3 +1,5 @@
+import { MaybePromise } from "@guria.dev/aws-js-practitioner-commons/types";
+
 export type Product = {
   id: string;
   title: string;
@@ -11,8 +13,6 @@ export type ProductStock = {
 };
 
 export type ProductWithStock = Product & { count: number };
-
-type MaybePromise<T> = T | Promise<T>;
 
 export interface ProductsSource {
   getProducts(): MaybePromise<Product[]>;

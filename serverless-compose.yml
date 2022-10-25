@@ -13,6 +13,8 @@ services:
     path: ./services/fixtures
     params:
       ResourcePrefix: ajp-${sls:stage}
+      WebAppDistributionDomain: ${fe-distribution.WebAppDistributionDomain}
+      WebAppCustomDomain: ${fe-distribution.WebAppCustomDomain}
 
   products-api:
     path: ./services/products-api
@@ -31,6 +33,8 @@ services:
       FixturesS3BucketName: ${fixtures.FixturesS3BucketName}
       ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
       ApiGatewayRestApiRootResourceId: ${api-gateway.ApiGatewayRestApiRootResourceId}
+      WebAppDistributionDomain: ${fe-distribution.WebAppDistributionDomain}
+      WebAppCustomDomain: ${fe-distribution.WebAppCustomDomain}
 
   shop-frontend-app:
     path: ./services/shop-frontend-app
@@ -38,6 +42,7 @@ services:
       - api-gateway
       - fe-distribution
       - products-api
+      - products-import
     params:
       ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
       ProductsApiServiceEndpoint: ${api-gateway.ApiGatewayRestApiEndpoint}
