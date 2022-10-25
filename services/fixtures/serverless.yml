@@ -22,6 +22,17 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.bucketName}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - "*"
+              AllowedMethods:
+                - GET
+                - PUT
+              AllowedOrigins:
+                - https://${param:WebAppDistributionDomain}
+                - https://${param:WebAppCustomDomain}
+              MaxAge: 3000
 
   Outputs:
     FixturesS3BucketName:
