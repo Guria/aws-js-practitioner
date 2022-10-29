@@ -26,26 +26,16 @@ const serverlessConfiguration: AWS = {
     iamRoleStatements: [
       {
         Effect: "Allow",
-        Action: ["s3:ListBucket"],
-        Resource: [
-          {
-            "Fn::Join": [
-              "",
-              ["arn:aws:s3:::", "${param:FixturesS3BucketName}"],
-            ],
-          },
+        Action: [
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:CopyObject",
         ],
-      },
-      {
-        Effect: "Allow",
-        Action: ["s3:*"],
         Resource: [
-          {
-            "Fn::Join": [
-              "",
-              ["arn:aws:s3:::", "${param:FixturesS3BucketName}", "/*"],
-            ],
-          },
+          "arn:aws:s3:::${param:FixturesS3BucketName}",
+          "arn:aws:s3:::${param:FixturesS3BucketName}/*",
         ],
       },
     ],

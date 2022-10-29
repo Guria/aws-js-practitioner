@@ -3,15 +3,15 @@ import {
   createMockAPIGatewayEvent,
   createMockContext,
 } from "@homeservenow/serverless-event-mocks";
-import { APIGatewayEvent } from "aws-lambda";
+import type { APIGatewayEvent } from "aws-lambda";
 import type { ProductsService } from "services/products";
-import { middyfy } from "@guria.dev/aws-js-practitioner-commons/middy";
+import { middyfyGatewayHandler } from "@guria.dev/aws-js-practitioner-commons/middy";
 import { handler } from "./createProduct";
 
 const makeHandler = (productsService: Partial<ProductsService>) => {
   return (event: APIGatewayEvent) => {
     const context = createMockContext();
-    return middyfy(handler.bind(null, productsService), {})(
+    return middyfyGatewayHandler(handler.bind(null, productsService), {})(
       // @ts-expect-error - middy has wrong type expectations here
       event,
       context

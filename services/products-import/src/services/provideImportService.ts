@@ -1,12 +1,18 @@
 import { S3 } from "aws-sdk";
-import { middyfy } from "@guria.dev/aws-js-practitioner-commons/middy";
+import {
+  middyfyGatewayHandler,
+  middyfyS3Handler,
+} from "@guria.dev/aws-js-practitioner-commons/middy";
 import { ImportService } from "services/import";
 import { S3ImportProvider } from "services/importProvider.s3";
 import * as env from "env";
 
-const importService = new ImportService(
-  new S3ImportProvider(new S3({ signatureVersion: "v4" }), env.FIXTURES_BUCKET)
-);
+const importService = new ImportService({
+  importProvider: new S3ImportProvider(
+    env.FIXTURES_BUCKET,
+    new S3({ signatureVersion: "v4" })
+  ),
+});
 
 export type ImportServiceFunctionHandler = (
   productsService: ImportService,
@@ -15,5 +21,9 @@ export type ImportServiceFunctionHandler = (
 ) => Promise<unknown>;
 
 export function provideImportService(handler: ImportServiceFunctionHandler) {
-  return middyfy(handler.bind(null, importService), env);
+  return middyfyGatewayHandler(handler.bind(null, importService), env);
+}
+
+export function provideImportServiceS3(handler: ImportServiceFunctionHandler) {
+  return middyfyS3Handler(handler.bind(null, importService));
 }

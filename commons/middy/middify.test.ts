@@ -1,17 +1,17 @@
 import { describe, test, expect } from "vitest";
-import { APIGatewayProxyResult } from "aws-lambda";
+import type { APIGatewayProxyResult } from "aws-lambda";
 import {
   createMockAPIGatewayEvent,
   createMockContext,
 } from "@homeservenow/serverless-event-mocks";
 import { createError } from "@middy/util";
-import { middyfy } from "./middyfy";
+import { middyfyGatewayHandler } from "./middyfy";
 
 const env = { CORS_ORIGINS: "foo.dev,bar.dev" };
 
-describe("middify", () => {
+describe("middyfyGatewayHandler", () => {
   test("should handle known errors", async () => {
-    const handler = middyfy(async () => {
+    const handler = middyfyGatewayHandler(async () => {
       throw createError(400, "test");
     }, env);
     const result = (await handler(
@@ -24,7 +24,7 @@ describe("middify", () => {
   });
 
   test("should handle unknown errors", async () => {
-    const handler = middyfy(async () => {
+    const handler = middyfyGatewayHandler(async () => {
       throw new Error("test");
     }, env);
     const result = (await handler(
@@ -39,7 +39,7 @@ describe("middify", () => {
   });
 
   test("should parse body", async () => {
-    const handler = middyfy(async (event) => {
+    const handler = middyfyGatewayHandler(async (event) => {
       expect(event.body).toEqual({ test: "test" });
       return { statusCode: 200, body: "test" };
     }, env);
@@ -53,7 +53,7 @@ describe("middify", () => {
   });
 
   test("should add CORS headers for supported origin", async () => {
-    const handler = middyfy(async () => {
+    const handler = middyfyGatewayHandler(async () => {
       return { statusCode: 200, body: "test" };
     }, env);
     const result = (await handler(
@@ -68,7 +68,7 @@ describe("middify", () => {
   });
 
   test("should add first origin in CORS headers for unsupported origin", async () => {
-    const handler = middyfy(async () => {
+    const handler = middyfyGatewayHandler(async () => {
       return { statusCode: 200, body: "test" };
     }, env);
     const result = (await handler(

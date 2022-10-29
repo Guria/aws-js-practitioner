@@ -19,6 +19,20 @@ const config: AWS["functions"] = {
       },
     ],
   },
+  importFileParser: {
+    handler: "src/handlers/importFileParser.main",
+    events: [
+      {
+        s3: {
+          bucket: "${param:FixturesS3BucketName}",
+          event: "s3:ObjectCreated:*",
+          rules: [{ prefix: "uploaded/" }],
+          existing: true,
+          forceDeploy: true,
+        },
+      },
+    ],
+  },
 };
 
 export default config;
