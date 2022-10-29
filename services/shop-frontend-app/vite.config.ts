@@ -17,7 +17,6 @@ export default defineConfig({
         manualChunks: {
           react: ["react", "react-dom", "react-query", "react-router-dom"],
           libs: ["formik", "yup", "axios"],
-          swagger: ["swagger-ui-react"],
         },
       },
     },
