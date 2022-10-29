@@ -17,6 +17,7 @@ export async function handler(
   >;
 
   try {
+    // TODO: reuse validation
     invariant(typeof title === "string", "Title is required");
     invariant(
       typeof description === "string" && description.length > 0,

@@ -8,11 +8,11 @@ type Services = {
 
 export class ImportService {
   private readonly importProvider: ImportProvider;
-  private readonly logger: Console = console;
+  private readonly logger: Console;
 
   constructor(services: Services) {
     this.importProvider = services.importProvider;
-    this.logger = services.logger;
+    this.logger = services.logger || console;
   }
 
   async getSignedUrl(name: string) {
