@@ -41,6 +41,6 @@ export function middyfyGatewayHandler<H extends APIGatewayProxyHandler>(
 
 type S3Handler = Handler<S3Event, void>;
 
-export function middyfyS3Handler<H extends S3Handler>(handler: H) {
+export function middyfySimpleHandler<H extends S3Handler>(handler: H) {
   return middy(handler).use(middyAccessLog());
 }

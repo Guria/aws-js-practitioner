@@ -1,5 +1,8 @@
 import { DynamoDB } from "aws-sdk";
-import { middyfyGatewayHandler } from "@guria.dev/aws-js-practitioner-commons/middy";
+import {
+  middyfyGatewayHandler,
+  middyfySimpleHandler,
+} from "@guria.dev/aws-js-practitioner-commons/middy";
 import { ProductsService } from "services/products";
 import { DynamoDBProductSource } from "services/productsSource.dynamo";
 import { v4 as uuidv4 } from "uuid";
@@ -19,4 +22,10 @@ export function provideProductsService(
   handler: ProductsServiceFunctionHandler
 ) {
   return middyfyGatewayHandler(handler.bind(null, productsService), env);
+}
+
+export function provideProductsServiceSQS(
+  handler: ProductsServiceFunctionHandler
+) {
+  return middyfySimpleHandler(handler.bind(null, productsService));
 }
