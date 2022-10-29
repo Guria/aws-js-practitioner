@@ -19,9 +19,9 @@ custom:
         * https://${param:WebAppDistributionDomain}
         * https://${param:WebAppCustomDomain}
         Swagger Schema available at:
-        * https://${param:WebAppCustomDomain}/swagger.json
+        * https://${param:WebAppCustomDomain}/swagger/swagger.json
         Swagger UI available at:
-        * https://${param:WebAppCustomDomain}/swagger
+        * https://${param:WebAppCustomDomain}/swagger/index.html
   s3Sync:
     - bucketName: ${param:WebAppS3BucketName}
       localDir: dist
@@ -36,7 +36,9 @@ custom:
   scriptable:
     hooks:
       before:package:createDeploymentArtifacts: |
-        aws --version
-        aws apigateway get-export --parameters extensions='apigateway' --rest-api-id ${param:ApiGatewayRestApiId} --stage-name ${sls:stage} --export-type swagger public/swagger.json
         echo "_CONFIG_ = {BASE_URL: \"${param:ProductsApiServiceEndpoint}\"}" > public/config.js
         npm run build
+        SWAGGER_DIST_PATH=$(node -e 'console.log(require("swagger-ui-dist").getAbsoluteFSPath())')
+        cp -r $SWAGGER_DIST_PATH/ dist/swagger
+        sed -i 's/url: ".*"/url: "swagger.json"/g' dist/swagger/swagger-initializer.js
+        aws apigateway get-export --parameters extensions='apigateway' --rest-api-id ${param:ApiGatewayRestApiId} --stage-name ${sls:stage} --export-type swagger dist/swagger/swagger.json

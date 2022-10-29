@@ -8,7 +8,6 @@ import PageCart from "~/components/pages/PageCart/PageCart";
 import PageProducts from "~/components/pages/PageProducts/PageProducts";
 import PageProduct from "~/components/pages/PageProduct/PageProduct";
 import { Typography } from "@mui/material";
-import Swagger from "~/components/Swagger/Swagger";
 
 function App() {
   return (
@@ -26,7 +25,6 @@ function App() {
           <Route index element={<PageProductForm />} />
           <Route path=":id" element={<PageProductForm />} />
         </Route>
-        <Route path="/swagger" element={<Swagger />} />
         <Route
           path="*"
           element={<Typography variant="h1">Not found</Typography>}
