@@ -49,6 +49,17 @@ const config: AWS["functions"] = {
       },
     ],
   },
+  catalogBatchProcess: {
+    handler: "src/handlers/catalogBatchProcess.main",
+    events: [
+      {
+        sqs: {
+          batchSize: 5,
+          arn: { "Fn::GetAtt": ["ImportedProductsQueue", "Arn"] },
+        },
+      },
+    ],
+  },
 };
 
 export default config;

@@ -42,3 +42,19 @@ Resources:
         S3BucketSource:
           S3Bucket: "${param:FixturesS3BucketName}"
           S3KeyPrefix: "seed/product-stocks.ndjson"
+
+  ImportedProductsQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "${param:ResourcePrefix}-imported-products"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 1209600
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt ImportedProductsDeadLetterQueue.Arn
+        maxReceiveCount: 3
+
+  ImportedProductsDeadLetterQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "${param:ResourcePrefix}-imported-products-dlq"
+      MessageRetentionPeriod: 1209600

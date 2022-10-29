@@ -1,7 +1,7 @@
 import { S3 } from "aws-sdk";
 import {
   middyfyGatewayHandler,
-  middyfyS3Handler,
+  middyfySimpleHandler,
 } from "@guria.dev/aws-js-practitioner-commons/middy";
 import { ImportService } from "services/import";
 import { S3ImportProvider } from "services/importProvider.s3";
@@ -25,5 +25,5 @@ export function provideImportService(handler: ImportServiceFunctionHandler) {
 }
 
 export function provideImportServiceS3(handler: ImportServiceFunctionHandler) {
-  return middyfyS3Handler(handler.bind(null, importService));
+  return middyfySimpleHandler(handler.bind(null, importService));
 }
