@@ -8,7 +8,9 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "csv-parser": "^3.0.0"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.107",
     "@types/node": "^16.11.65",

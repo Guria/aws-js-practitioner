@@ -1,17 +1,27 @@
-import type { APIGatewayProxyHandler } from "aws-lambda";
+import type {
+  Handler,
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  S3Event,
+} from "aws-lambda";
 import middy from "@middy/core";
 import middyJsonBodyParser from "@middy/http-json-body-parser";
 import middyCors from "@middy/http-cors";
 import middyErrorHandler from "@middy/http-error-handler";
 import middyAccessLog from "@schibsted/middy-access-log";
 
-type Env = {
+type GatewayEnv = {
   CORS_ORIGINS?: string;
 };
 
-export function middyfy<H extends APIGatewayProxyHandler>(
+type APIGatewayProxyHandler = Handler<
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult
+>;
+
+export function middyfyGatewayHandler<H extends APIGatewayProxyHandler>(
   handler: H,
-  env: Env
+  env: GatewayEnv
 ) {
   const CORS_ORIGINS_ARRAY = (env.CORS_ORIGINS || "")
     .split(",")
@@ -27,4 +37,10 @@ export function middyfy<H extends APIGatewayProxyHandler>(
         fallbackMessage: JSON.stringify({ message: "Internal server error" }),
       })
     );
+}
+
+type S3Handler = Handler<S3Event, void>;
+
+export function middyfyS3Handler<H extends S3Handler>(handler: H) {
+  return middy(handler).use(middyAccessLog());
 }
