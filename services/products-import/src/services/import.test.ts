@@ -25,34 +25,28 @@ describe("getSignedUrl", () => {
 describe("importProductsFile", () => {
   test("should parse csv file", async () => {
     const moveFileSpy = vi.fn();
-    const logSpy = vi.fn();
+    const notifyProductSpy = vi.fn();
     const importService = new ImportService({
       importProvider: usePartial<ImportProvider>({
-        getReadStream: () => {
-          return createReadStream(join(__dirname, "./products.csv"));
-        },
+        getReadStream: () =>
+          createReadStream(join(__dirname, "./products.csv")),
         moveFile: moveFileSpy,
-      }),
-      logger: usePartial<Console>({
-        log: logSpy,
-        debug: vi.fn(),
-        error: vi.fn(),
+        notifyProduct: notifyProductSpy,
       }),
     });
 
     await importService.importProductsFile("uploaded/test.csv");
-    // TODO: expect price and count to be numbers
-    expect(logSpy).toHaveBeenNthCalledWith(1, {
+    expect(notifyProductSpy).toHaveBeenNthCalledWith(1, {
       title: "test",
       description: "description",
-      price: "10",
-      count: "2",
+      price: 10,
+      count: 2,
     });
-    expect(logSpy).toHaveBeenNthCalledWith(2, {
+    expect(notifyProductSpy).toHaveBeenNthCalledWith(2, {
       title: "test2",
       description: "description2",
-      price: "20",
-      count: "3",
+      price: 20,
+      count: 3,
     });
     expect(moveFileSpy).toHaveBeenCalledWith(
       "uploaded/test.csv",

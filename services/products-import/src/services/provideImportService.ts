@@ -1,16 +1,19 @@
-import { S3 } from "aws-sdk";
+import { S3, SQS } from "aws-sdk";
 import {
   middyfyGatewayHandler,
   middyfySimpleHandler,
 } from "@guria.dev/aws-js-practitioner-commons/middy";
 import { ImportService } from "services/import";
-import { S3ImportProvider } from "services/importProvider.s3";
+import { AWSImportProvider } from "services/importProvider.aws";
 import * as env from "env";
 
 const importService = new ImportService({
-  importProvider: new S3ImportProvider(
-    env.FIXTURES_BUCKET,
-    new S3({ signatureVersion: "v4" })
+  importProvider: new AWSImportProvider(
+    {
+      s3: new S3({ signatureVersion: "v4" }),
+      sqs: new SQS({}),
+    },
+    env
   ),
 });
 

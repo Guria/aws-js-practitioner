@@ -11,7 +11,7 @@ type Env = {
   PRODUCT_STOCKS_TABLE: string;
 };
 
-export class DynamoDBProductSource implements ProductsSource {
+export class AWSProductSource implements ProductsSource {
   constructor(
     private dynamoDB: DynamoDB.DocumentClient,
     private genUid: () => string,
