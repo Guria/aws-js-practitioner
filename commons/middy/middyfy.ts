@@ -9,6 +9,8 @@ import middyJsonBodyParser from "@middy/http-json-body-parser";
 import middyCors from "@middy/http-cors";
 import middyErrorHandler from "@middy/http-error-handler";
 import middyAccessLog from "@schibsted/middy-access-log";
+import middyInputOutputLogger from "@middy/input-output-logger";
+import middyErrorLogger from "@middy/error-logger";
 
 type GatewayEnv = {
   CORS_ORIGINS?: string;
@@ -42,5 +44,5 @@ export function middyfyGatewayHandler<H extends APIGatewayProxyHandler>(
 type S3Handler = Handler<S3Event, void>;
 
 export function middyfySimpleHandler<H extends S3Handler>(handler: H) {
-  return middy(handler).use(middyAccessLog());
+  return middy(handler).use(middyInputOutputLogger()).use(middyErrorLogger());
 }

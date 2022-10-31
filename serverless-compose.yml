@@ -35,6 +35,8 @@ services:
       ApiGatewayRestApiRootResourceId: ${api-gateway.ApiGatewayRestApiRootResourceId}
       WebAppDistributionDomain: ${fe-distribution.WebAppDistributionDomain}
       WebAppCustomDomain: ${fe-distribution.WebAppCustomDomain}
+      ImportedProductsQueue: ${products-api.ImportedProductsQueue}
+      ImportedProductsQueueUrl: ${products-api.ImportedProductsQueueUrl}
 
   shop-frontend-app:
     path: ./services/shop-frontend-app

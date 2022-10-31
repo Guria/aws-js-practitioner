@@ -58,3 +58,9 @@ Resources:
     Properties:
       QueueName: "${param:ResourcePrefix}-imported-products-dlq"
       MessageRetentionPeriod: 1209600
+
+Outputs:
+  ImportedProductsQueueUrl:
+    Value: !GetAtt ImportedProductsQueue.QueueUrl
+  ImportedProductsQueue:
+    Value: !GetAtt ImportedProductsQueue.Arn

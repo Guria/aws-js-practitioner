@@ -28,20 +28,16 @@ const serverlessConfiguration: AWS = {
         Ref: "ProductStocksTable",
       },
     },
-    iam: {
-      role: {
-        statements: [
-          {
-            Effect: "Allow",
-            Action: ["dynamodb:Scan", "dynamodb:GetItem", "dynamodb:PutItem"],
-            Resource: [
-              { "Fn::GetAtt": ["ProductsTable", "Arn"] },
-              { "Fn::GetAtt": ["ProductStocksTable", "Arn"] },
-            ],
-          },
+    iamRoleStatements: [
+      {
+        Effect: "Allow",
+        Action: ["dynamodb:Scan", "dynamodb:GetItem", "dynamodb:PutItem"],
+        Resource: [
+          { "Fn::GetAtt": ["ProductsTable", "Arn"] },
+          { "Fn::GetAtt": ["ProductStocksTable", "Arn"] },
         ],
       },
-    },
+    ],
   },
   functions,
   package: { individually: true },
