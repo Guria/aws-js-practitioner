@@ -22,6 +22,7 @@ const serverlessConfiguration: AWS = {
       FIXTURES_BUCKET: "${param:FixturesS3BucketName}",
       CORS_ORIGINS:
         "${param:WebAppCustomDomain},${param:WebAppDistributionDomain}",
+      IMPORTED_PRODUCTS_QUEUE: "${param:ImportedProductsQueueUrl}",
     },
     iamRoleStatements: [
       {
@@ -31,15 +32,20 @@ const serverlessConfiguration: AWS = {
           "s3:PutObject",
           "s3:GetObject",
           "s3:DeleteObject",
-          "s3:CopyObject",
         ],
         Resource: [
           "arn:aws:s3:::${param:FixturesS3BucketName}",
           "arn:aws:s3:::${param:FixturesS3BucketName}/*",
         ],
       },
+      {
+        Effect: "Allow",
+        Action: ["sqs:SendMessage"],
+        Resource: ["${param:ImportedProductsQueue}"],
+      },
     ],
   },
+
   functions,
   package: { individually: true },
   custom: {
