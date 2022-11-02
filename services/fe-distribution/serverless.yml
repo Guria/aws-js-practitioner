@@ -109,3 +109,5 @@ resources:
       Value: !Ref WebAppDistribution
     WebAppCustomDomain:
       Value: ${self:custom.vars.domainName}
+    HostedZoneDomain:
+      Value: ${env:HOSTED_ZONE_DOMAIN}

@@ -41,7 +41,14 @@ export class ProductsService {
     return (await this.getProducts()).filter((product) => product.count > 0);
   }
 
-  public async createProduct(product: Omit<ProductWithStock, "id">) {
-    return this.source.createProduct(product);
+  public async createProduct(
+    product: Omit<ProductWithStock, "id">,
+    notify: boolean
+  ) {
+    const newProduct = await this.source.createProduct(product);
+    if (notify) {
+      await this.source.notifyProductImported(newProduct);
+    }
+    return newProduct;
   }
 }
