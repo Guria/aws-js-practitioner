@@ -32,12 +32,15 @@ export async function handler(
     throw createError(400, JSON.stringify({ message: error.message }));
   }
 
-  const product = await productsService.createProduct({
-    title,
-    description,
-    price,
-    count,
-  });
+  const product = await productsService.createProduct(
+    {
+      title,
+      description,
+      price,
+      count,
+    },
+    false
+  );
 
   return formatJSONResponse(product);
 }

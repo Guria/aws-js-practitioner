@@ -25,6 +25,7 @@ services:
       ApiGatewayRestApiRootResourceId: ${api-gateway.ApiGatewayRestApiRootResourceId}
       WebAppDistributionDomain: ${fe-distribution.WebAppDistributionDomain}
       WebAppCustomDomain: ${fe-distribution.WebAppCustomDomain}
+      HostedZoneDomain: ${fe-distribution.HostedZoneDomain}
 
   products-import:
     path: ./services/products-import

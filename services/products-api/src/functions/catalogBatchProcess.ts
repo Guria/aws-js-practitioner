@@ -31,12 +31,16 @@ export async function handler(
       throw createError(400, JSON.stringify({ message: error.message }));
     }
 
-    const product = await productsService.createProduct({
-      title,
-      description,
-      price,
-      count,
-    });
+    // TODO: do not await here, just collect promises and await Promise.all
+    const product = await productsService.createProduct(
+      {
+        title,
+        description,
+        price,
+        count,
+      },
+      true
+    );
 
     console.log("Created product", product);
   }

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, vitest } from "vitest";
 import { ProductsService } from "./products";
 import { ProductsSource } from "./productsSource";
 
@@ -201,18 +201,52 @@ describe("createProduct", () => {
   test("should create product", async () => {
     const productsService = new ProductsService({
       createProduct(product) {
+        debugger;
         return { id: "1", ...product };
       },
     } as ProductsSource);
 
-    const product = await productsService.createProduct({
+    const product = await productsService.createProduct(
+      {
+        title: "Product 1",
+        description: "Product 1 description",
+        price: 100,
+        count: 10,
+      },
+      false
+    );
+
+    expect(product).toEqual({
+      id: "1",
       title: "Product 1",
       description: "Product 1 description",
       price: 100,
       count: 10,
     });
+  });
+  test("should notify about new product", async () => {
+    const notifyNewProduct = vitest.fn();
+    const productsService = new ProductsService({
+      createProduct(product) {
+        return { id: "1", ...product };
+      },
+      notifyProductImported(product) {
+        notifyNewProduct(product);
+      },
+    } as ProductsSource);
 
-    expect(product).toEqual({
+    await productsService.createProduct(
+      {
+        title: "Product 1",
+        description: "Product 1 description",
+        price: 100,
+        count: 10,
+      },
+      true
+    );
+
+    expect(notifyNewProduct).toBeCalledTimes(1);
+    expect(notifyNewProduct).toBeCalledWith({
       id: "1",
       title: "Product 1",
       description: "Product 1 description",

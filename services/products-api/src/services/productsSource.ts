@@ -22,4 +22,5 @@ export interface ProductsSource {
   createProduct(
     product: Omit<ProductWithStock, "id">
   ): MaybePromise<ProductWithStock>;
+  notifyProductImported(product: Product): MaybePromise<void>;
 }

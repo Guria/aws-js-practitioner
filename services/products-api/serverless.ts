@@ -19,6 +19,7 @@ const serverlessConfiguration: AWS = {
     environment: {
       CORS_ORIGINS:
         "${param:WebAppCustomDomain},${param:WebAppDistributionDomain}",
+      WEBAPP_URL: "https://${param:WebAppCustomDomain}",
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       PRODUCTS_TABLE: {
@@ -26,6 +27,9 @@ const serverlessConfiguration: AWS = {
       },
       PRODUCT_STOCKS_TABLE: {
         Ref: "ProductStocksTable",
+      },
+      PRODUCT_IMPORTED_TOPIC: {
+        Ref: "ProductsImportedTopic",
       },
     },
     iamRoleStatements: [
@@ -36,6 +40,11 @@ const serverlessConfiguration: AWS = {
           { "Fn::GetAtt": ["ProductsTable", "Arn"] },
           { "Fn::GetAtt": ["ProductStocksTable", "Arn"] },
         ],
+      },
+      {
+        Effect: "Allow",
+        Action: ["sns:Publish"],
+        Resource: [{ "Fn::GetAtt": ["ProductsImportedTopic", "TopicArn"] }],
       },
     ],
   },

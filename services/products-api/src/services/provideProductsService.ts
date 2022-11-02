@@ -1,4 +1,4 @@
-import { DynamoDB } from "aws-sdk";
+import { DynamoDB, SNS } from "aws-sdk";
 import {
   middyfyGatewayHandler,
   middyfySimpleHandler,
@@ -9,7 +9,14 @@ import { v4 as uuidv4 } from "uuid";
 import * as env from "env";
 
 const productsService = new ProductsService(
-  new AWSProductSource(new DynamoDB.DocumentClient(), uuidv4, env)
+  new AWSProductSource(
+    {
+      dynamoDB: new DynamoDB.DocumentClient(),
+      genUid: uuidv4,
+      sns: new SNS(),
+    },
+    env
+  )
 );
 
 type ProductsServiceFunctionHandler = (

@@ -59,6 +59,35 @@ Resources:
       QueueName: "${param:ResourcePrefix}-imported-products-dlq"
       MessageRetentionPeriod: 1209600
 
+  ProductsImportedTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      TopicName: "${param:ResourcePrefix}-products-imported"
+
+  ProductsImportedEmailSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      Endpoint: products-imported.${param:ResourcePrefix}@${param:HostedZoneDomain}
+      Protocol: email
+      TopicArn: !Ref ProductsImportedTopic
+      FilterPolicy:
+        price:
+          - numeric:
+              - "<"
+              - 100
+
+  ExpensiveProductsImportedEmailSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      Endpoint: expensive-products-imported.${param:ResourcePrefix}@${param:HostedZoneDomain}
+      Protocol: email
+      TopicArn: !Ref ProductsImportedTopic
+      FilterPolicy:
+        price:
+          - numeric:
+              - ">="
+              - 100
+
 Outputs:
   ImportedProductsQueueUrl:
     Value: !GetAtt ImportedProductsQueue.QueueUrl
