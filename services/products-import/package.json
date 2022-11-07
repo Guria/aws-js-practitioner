@@ -12,11 +12,11 @@
     "csv-parser": "^3.0.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.107",
-    "@types/node": "^16.11.65",
-    "esbuild": "^0.15.11",
-    "serverless-esbuild": "^1.33.0",
-    "vite-tsconfig-paths": "^3.5.1",
-    "vitest": "^0.24.3"
+    "@types/aws-lambda": "^8.10.108",
+    "@types/node": "^16.18.3",
+    "esbuild": "^0.15.13",
+    "serverless-esbuild": "^1.33.1",
+    "vite-tsconfig-paths": "^3.5.2",
+    "vitest": "^0.24.5"
   }
 }
