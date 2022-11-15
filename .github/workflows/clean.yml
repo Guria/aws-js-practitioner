@@ -39,7 +39,10 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_FOR_GITHUB }}
           aws-region: us-east-1
-      - run: |
+      - name: Remove
+        env:
+          USER_GURIA: ${{ secrets.USER_GURIA }}
+        run: |
           # slugify branch ref
           slug=$(echo ${{ github.event.pull_request.head.ref }} | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+\|-+$//g')
           npx sls refresh-outputs --stage $slug
