@@ -43,6 +43,8 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_FOR_GITHUB }}
           aws-region: us-east-1
       - name: Deploy
+        env:
+          USER_GURIA: ${{ secrets.USER_GURIA }}
         id: deploy
         run: |
           # slugify branch ref
