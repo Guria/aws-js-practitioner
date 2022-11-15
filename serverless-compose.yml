@@ -9,6 +9,12 @@ services:
     params:
       ResourcePrefix: ajp-${sls:stage}
 
+  auth:
+    path: ./services/authorization
+    params:
+      ApiGatewayRestApiId: ${api-gateway.ApiGatewayRestApiId}
+      ApiGatewayRestApiRootResourceId: ${api-gateway.ApiGatewayRestApiRootResourceId}
+
   fixtures:
     path: ./services/fixtures
     params:
@@ -38,6 +44,7 @@ services:
       WebAppCustomDomain: ${fe-distribution.WebAppCustomDomain}
       ImportedProductsQueue: ${products-api.ImportedProductsQueue}
       ImportedProductsQueueUrl: ${products-api.ImportedProductsQueueUrl}
+      BasicAuthorizerId: ${auth.BasicAuthorizerId}
 
   shop-frontend-app:
     path: ./services/shop-frontend-app

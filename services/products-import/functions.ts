@@ -15,6 +15,10 @@ const config: AWS["functions"] = {
               querystrings: { name: true },
             },
           },
+          authorizer: {
+            type: "token",
+            authorizerId: "${param:BasicAuthorizerId}",
+          },
         },
       },
     ],

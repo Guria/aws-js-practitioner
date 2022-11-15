@@ -7,12 +7,41 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider, hydrate } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { theme } from "~/theme";
+import { AxiosError } from "axios";
 
 const BE_NOT_YET_IMPLEMENTED = true;
 
+function handleError(err: unknown) {
+  if (err instanceof AxiosError) {
+    debugger;
+    if (err.response?.status === 401) {
+      alert("You are not authorized to perform this action");
+    } else if (err.response?.status === 403) {
+      alert("You are not allowed to perform this action");
+    } else if (err.response?.status === 404) {
+      alert("The requested resource was not found");
+    } else if (err.response?.status === 500) {
+      alert("An internal server error occurred");
+    } else if (err.response?.status === 501) {
+      alert("An internal server error occurred");
+    } else {
+      alert("An error occurred");
+    }
+  }
+  console.error(err);
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnWindowFocus: false, retry: false, staleTime: Infinity },
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+      staleTime: Infinity,
+      onError: handleError,
+    },
+    mutations: {
+      onError: handleError,
+    },
   },
 });
 
