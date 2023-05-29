@@ -1,0 +1,36 @@
+service: ajp-database
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+
+resources:
+  Resources:
+    CartDB:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBInstanceIdentifier: ajp-database
+        Engine: postgres
+        EngineVersion: 12.12
+        AllocatedStorage: 20
+        DBInstanceClass: db.t2.micro
+        MasterUsername: ${env:PG_USER}
+        MasterUserPassword: ${env:PG_PASSWORD}
+        DBName: ${sls:stage}
+        VPCSecurityGroups:
+          - Fn::GetAtt: [CartDBSecurityGroup, GroupId]
+        BackupRetentionPeriod: 0
+        DeletionProtection: false
+        StorageEncrypted: false
+        PubliclyAccessible: true
+    CartDBSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: CartDB security group
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: 0.0.0.0/0

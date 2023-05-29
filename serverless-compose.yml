@@ -4,6 +4,11 @@ services:
     params:
       ResourcePrefix: ajp-${sls:stage}
 
+  cart-db:
+    path: ./services/cart-db
+    params:
+      ResourcePrefix: ajp-${sls:stage}
+
   fe-distribution:
     path: ./services/fe-distribution
     params:
